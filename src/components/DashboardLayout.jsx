@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import NavBar from './NavBar'
 import SideBar from './SideBar'
 import BoardWarpper from './BoardWarpper'
@@ -6,6 +6,7 @@ import BoardDialog from './BoardDialog'
 import AlertDialog from './AlertDialog'
 import { useDispatch, useSelector } from 'react-redux'
 import Open_icon from '../assets/icon-show-sidebar.svg'
+import TaskDialog from './TaskDialog'
 
 
 const DashboardLayout = () => {
@@ -13,8 +14,12 @@ const DashboardLayout = () => {
     const [open, setOpen] = useState(false) // Sidebar state 
 
 
+
+
     const openModal = useSelector((state) => state.modal.isBoardDialogOpen) // Board Dialog state
     const openAlert = useSelector((state) => state.modal.isAlertDialogOpen) // Alert Dialog state
+
+    const isTaskDialogOpen = useSelector((state) => state.modal.isTaskDialogOpen) // Task Dialog state
 
 
     return (
@@ -33,6 +38,7 @@ const DashboardLayout = () => {
             </div>
             {openModal && <BoardDialog />}
             {openAlert && <AlertDialog />}
+            {isTaskDialogOpen && <TaskDialog />}
 
         </div>
     )

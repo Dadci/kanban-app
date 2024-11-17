@@ -3,12 +3,15 @@ import logo_dark from '../assets/logo-dark.svg'
 import dots from '../assets/icon-vertical-ellipsis.svg'
 import { useState, useEffect, useRef } from 'react'
 import Options from './Options'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { openTaskDialog } from '../store/modalSlice'
+
 
 
 const NavBar = () => {
     const [openOptions, setOpenOptions] = useState(false)
     const optionsRef = useRef(null)
+    const dispatch = useDispatch()
 
     const boards = useSelector((state) => state.boards.boards)
     const activeBoard = useSelector((state) => state.boards.activeBoard)
@@ -33,6 +36,11 @@ const NavBar = () => {
     }, [])
 
 
+    const handleAddTask = () => {
+        dispatch(openTaskDialog())
+    }
+
+
     const handleOptions = () => {
         setOpenOptions(!openOptions)
     }
@@ -55,10 +63,10 @@ const NavBar = () => {
 
                     <div className='flex items-center gap-5 relative' ref={optionsRef}>
 
-                        <button disabled={boards.length === 0} className='bg-primary text-sm disabled:bg-primary-hover font-semibold text-white px-6 py-4 rounded-full hover:bg-primary-hover'>+ Add New Task</button>
+                        <button disabled={boards.length === 0} className='bg-primary text-sm disabled:bg-primary-hover font-semibold text-white px-6 py-4 rounded-full hover:bg-primary-hover' onClick={handleAddTask}>+ Add New Task</button>
                         <img src={dots} alt="dots" className=' cursor-pointer p-2' onClick={handleOptions} />
 
-                        {openOptions && <Options />}
+                        {openOptions && <Options handleOptions={handleOptions} />}
 
                     </div>
 

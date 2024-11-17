@@ -95,8 +95,9 @@ const BoardDialog = () => {
                 name: boardName,
                 columns: columns.map(col => ({
                     id: col.id,
-                    name: col.name,
-                    tasks: []
+                    name: col.name.toUpperCase(),
+                    tasks: [],
+
                 }))
             }
             dispatch(addBoard(newBoard))

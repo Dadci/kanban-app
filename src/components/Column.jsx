@@ -9,9 +9,9 @@ const Column = ({column}) => {
 
         <>
             
-                <div className='flex flex-col items-start w-[280px] space-y-6'>
-                    <ColumnStatus name={column.name} />
-                    <TasksWarpper />
+                <div className='flex flex-col items-start w-[280px] space-y-5'>
+                    <ColumnStatus name={column.name} columnId={column.id} />
+                    <TasksWarpper columnId={column.id}/>
 
                 </div>
 

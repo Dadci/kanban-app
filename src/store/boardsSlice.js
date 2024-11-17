@@ -5,38 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 const boardsSlice = createSlice({
     name: 'boards',
     initialState: {
-        boards: [
-            //     {
-            //         id: '',
-            //         name: "",
-            //         columns: [
-            //             {
-            //                 id: '',
-            //                 name: "",
-            //                 tasks: [
-            //                     {
-            //                         id: '',
-            //                         title: "",
-            //                         description: "",
-            //                         status: "",
-            //                         subtasks: [
-            //                             {
-            //                                 id: '',
-            //                                 title: "",
-            //                                 isCompleted: false
-            //                             },
-            //                             {
-            //                                 id: '',
-            //                                 title: "",
-            //                                 isCompleted: false
-            //                             }
-            //                         ]
-            //                     }
-            //                 ]
-            //             }
-            //         ]
-            //     }
-        ],
+        boards: [],
         activeBoard: null,
     },
     reducers: {
@@ -111,6 +80,37 @@ const boardsSlice = createSlice({
                 })
             }
         },
+        editTask: (state, action) => {
+            const { boardId, columnId, taskId, task } = action.payload
+            const board = state.boards.find(b => b.id === boardId)
+            const column = board?.columns.find(c => c.id === columnId)
+            if (column) {
+                const taskIndex = column.tasks.findIndex(t => t.id === taskId)
+                if (taskIndex !== -1) {
+                    column.tasks[taskIndex] = {
+                        ...column.tasks[taskIndex],
+                        ...task,
+                        subtasks: task.subtasks.map(st => ({
+                            id: st.id || uuidv4(),
+                            title: st.title,
+                            isCompleted: st.isCompleted || false
+                        }))
+                    }
+                }
+            }
+        },
+
+        deleteTask: (state, action) => {
+            const { boardId, columnId, taskId } = action.payload
+            const board = state.boards.find(b => b.id === boardId)
+            const column = board?.columns.find(c => c.id === columnId)
+            if (column) {
+                const taskIndex = column.tasks.findIndex(t => t.id === taskId)
+                if (taskIndex !== -1) {
+                    column.tasks.splice(taskIndex, 1)
+                }
+            }
+        },
         toggleSubtask: (state, action) => {
             const { boardId, columnId, taskId, subtaskId } = action.payload
             const board = state.boards.find(b => b.id === boardId)
@@ -121,18 +121,7 @@ const boardsSlice = createSlice({
                 subtask.isCompleted = !subtask.isCompleted
             }
         },
-        moveTask: (state, action) => {
-            const { taskId, fromColumnId, toColumnId, boardId } = action.payload
-            const board = state.boards.find(b => b.id === boardId)
-            const fromColumn = board?.columns.find(c => c.id === fromColumnId)
-            const toColumn = board?.columns.find(c => c.id === toColumnId)
-            if (fromColumn && toColumn) {
-                const taskIndex = fromColumn.tasks.findIndex(t => t.id === taskId)
-                const task = fromColumn.tasks[taskIndex]
-                fromColumn.tasks.splice(taskIndex, 1)
-                toColumn.tasks.push({ ...task, status: toColumn.name })
-            }
-        },
+
 
         setActiveBoard: (state, action) => {
             state.activeBoard = action.payload
@@ -144,8 +133,9 @@ export const {
     addBoard,
     addColumn,
     addTask,
+    editTask,
+    deleteTask,
     toggleSubtask,
-    moveTask,
     setActiveBoard,
     editBoard,
     deleteBoard
