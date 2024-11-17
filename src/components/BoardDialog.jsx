@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { addBoard } from '../store/boardsSlice'
+import { addBoard, editBoard } from '../store/boardsSlice'
 import { closeBoardDialog } from '../store/modalSlice'
 import { v4 as uuidv4 } from 'uuid'
 import close_icon from '../assets/icon-cross.svg'
@@ -15,6 +15,7 @@ const BoardDialog = () => {
 
 
     const dispatch = useDispatch()
+    const { dialogType, boardData } = useSelector(state => state.modal)
     const [boardName, setBoardName] = useState('')
     const [error, setError] = useState('')
     const [columns, setColumns] = useState([
@@ -23,6 +24,16 @@ const BoardDialog = () => {
             name: ''
         }
     ])
+
+    useEffect(() => {
+        if (dialogType === 'edit' && boardData) {
+            setBoardName(boardData.name)
+            setColumns(boardData.columns.map(col => ({
+                id: col.id,
+                name: col.name
+            })))
+        }
+    }, [dialogType, boardData])
 
 
     const handleAddColumn = (e) => {
@@ -71,20 +82,27 @@ const BoardDialog = () => {
             return
         }
 
-        const newBoard = {
-            id: uuidv4(),
-            name: boardName,
-            columns: columns.map(col => ({
-                id: col.id,
-                name: col.name,
-                tasks: []
+        if (dialogType === 'edit') {
+            dispatch(editBoard({
+                id: boardData.id,
+                name: boardName,
+                columns: columns
             }))
+            toast.success('Changes saved successfully!')
+        } else {
+            const newBoard = {
+                id: uuidv4(),
+                name: boardName,
+                columns: columns.map(col => ({
+                    id: col.id,
+                    name: col.name,
+                    tasks: []
+                }))
+            }
+            dispatch(addBoard(newBoard))
+            toast.success('Board added successfully!')
         }
-
-        dispatch(addBoard(newBoard))
         dispatch(closeBoardDialog())
-        toast.success('Board added successfully!')
-
     }
 
 
@@ -94,7 +112,7 @@ const BoardDialog = () => {
             <div className='w-[480px] flex flex-col p-8 bg-white rounded-lg shadow-sm '>
 
                 <div className='flex flex-row items-center justify-between w-full'>
-                    <h1 className='text-text font-bold text-lg'>Add New Board</h1>
+                    <h1 className='text-text font-bold text-lg'> {dialogType === 'edit' ? 'Edit Board' : 'Add New Board'}</h1>
                     <img src={close_icon} alt='close' type='button' className='cursor-pointer'
                         onClick={handleClose}
                     />
@@ -121,7 +139,7 @@ const BoardDialog = () => {
                     ))}
                     <button type='button' className='text-primary mb-6 font-semibold text-sm px-4 py-3 bg-primary/25 rounded-full' onClick={handleAddColumn}>+ Add New Column</button>
 
-                    <button type='submit' className='bg-primary text-sm font-semibold text-white px-4 py-3 rounded-full w-fullhover:bg-primary-hover'>Create New Board</button>
+                    <button type='submit' className='bg-primary text-sm font-semibold text-white px-4 py-3 rounded-full w-fullhover:bg-primary-hover'>{dialogType === 'edit' ? 'Save Changes' : 'Create New Board'}</button>
                 </form>
 
             </div>

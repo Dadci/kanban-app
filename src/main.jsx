@@ -10,7 +10,12 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
       <App />
-      <Toaster position='bottom-right' />
+      <Toaster toastOptions={{
+        style: {
+          fontSize: '14px',
+          fontWeight: '500',
+        }
+      }} />
     </Provider>
   </StrictMode>,
 )

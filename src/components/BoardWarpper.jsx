@@ -18,19 +18,21 @@ const BoardWarpper = () => {
         dispatch(openBoardDialog())
     }
 
-    const handleAddColumn = () => {
-
-        dispatch(openBoardDialog({ type: 'addColumn', boardId: activeBoard }))
+    const handleEdit = () => {
+        dispatch(openBoardDialog({
+            type: 'edit',
+            board: currentBoard
+        }))
     }
 
 
     return (
         <>
-            {boards.length === 0 ? <div className='flex flex-col items-center justify-center flex-1 gap-4'>
+            {boards.length === 0 ? <div className='flex flex-col items-center justify-center flex-1 gap-8'>
                 <h1 className='text-text-secondary font-medium text-[15px]'>
                     There's no Board yet . Create a new one to get started.
                 </h1>
-                <button className='bg-primary text-sm font-semibold text-white px-6 py-3 rounded-full hover:bg-primary-hover' onClick={handleClick}>+ Create New Board</button>
+                <button className='bg-primary text-sm font-semibold text-white px-6 py-4 rounded-full hover:bg-primary-hover' onClick={handleClick}>+ Create New Board</button>
 
 
 
@@ -42,7 +44,7 @@ const BoardWarpper = () => {
 
                 ))}
 
-                <div className='flex flex-col items-center justify-center p-5 bg-primary-hover/10 w-[280px] rounded-lg cursor-pointer mt-10' onClick={handleAddColumn}>
+                <div className='flex flex-col items-center justify-center p-5 bg-[#E9EFFA] w-[280px] rounded-lg cursor-pointer mt-10 mb-8' onClick={handleEdit}>
 
                     <h1 className='text-text-secondary font-medium text-xl '>+ Add New Column</h1>
 
