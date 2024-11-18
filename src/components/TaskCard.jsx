@@ -52,9 +52,10 @@ const TaskCard = ({ task, columnId }) => {
 
     const handleOptionsClick = (e) => {
         // Stop the event from triggering drag
-        e.stopPropagation();
-        e.preventDefault();
-        handleOptions();
+        if (!isDragging) {
+            e.stopPropagation();
+            handleOptions();
+        }
     };
 
     return (
@@ -64,7 +65,9 @@ const TaskCard = ({ task, columnId }) => {
 
                 <h1 className='text-text text-[14px] font-semibold group-hover:text-primary break-all leading-5'>{task.title}</h1>
 
-                <button className=' p-1 rounded-full shrink-0 z-[45]' draggable={false} onClick={handleOptions}>
+                <button className=' p-1 rounded-full shrink-0 z-[45]' draggable={false} onClick={handleOptionsClick} onPointerDown={(e) => {
+                    e.stopPropagation();
+                }}>
                     <img draggable={false} src={dots} alt="dots" className=' w-1 cursor-pointer text-lg'
                     />
                 </button>
