@@ -38,9 +38,9 @@ const ColumnStatus = ({ name, columnId }) => {
 
 
     return (
-        <div>
+        <div className=''>
 
-            <div className='flex flex-row items-center gap-2'>
+            <div className='flex flex-row items-center p-2 gap-2'>
                 <span className={ `p-1 w-3 h-3 ${colorClass} rounded-full`} ></span>
                 <h2 className='text-[12px] font-semibold tracking-wider text-text-secondary'>
                     {name} ({tasks.length})

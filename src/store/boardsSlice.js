@@ -168,6 +168,16 @@ const boardsSlice = createSlice({
         setActiveBoard: (state, action) => {
             state.activeBoard = action.payload
         },
+        reorderTasks: (state, action) => {
+            const { boardId, columnId, tasks } = action.payload;
+            const board = state.boards.find(b => b.id === boardId);
+            if (!board) return;
+
+            const column = board.columns.find(c => c.id === columnId);
+            if (!column) return;
+
+            column.tasks = tasks;
+        }
     }
 })
 
@@ -180,7 +190,8 @@ export const {
     toggleSubtask,
     setActiveBoard,
     editBoard,
-    deleteBoard
+    deleteBoard,
+    reorderTasks
 } = boardsSlice.actions
 
 export default boardsSlice.reducer

@@ -1,10 +1,18 @@
 import React from 'react'
 import TaskCard from './TaskCard'
 import { useSelector } from 'react-redux'
+import { useDroppable } from '@dnd-kit/core';
+
 
 
 
 const TasksWarpper = ({ columnId }) => {
+
+    const { setNodeRef, isOver } = useDroppable({
+        id: columnId
+    });
+
+
 
     const boards = useSelector(state => state.boards.boards)
     const activeBoard = useSelector(state => state.boards.activeBoard)
@@ -14,13 +22,18 @@ const TasksWarpper = ({ columnId }) => {
     const tasks = column?.tasks || []
 
     return (
-        <div className='flex flex-shrink-0 flex-col gap-3 w-full overflow-y-auto max-h-[calc(100vh-200px)]'>
+
+
+        <div ref={setNodeRef} className={`flex flex-col flex-shrink-0 gap-3 w-full flex-1 p-2 mb-8 pb-4 ${isOver ? ' border-2 border-dashed border-text-secondary/30 rounded-lg' : ''} `} draggable={false} >
 
 
             {tasks.map(task => (
                 <TaskCard key={task.id} task={task} columnId={column.id} />
             ))}
+
         </div>
+
+
     )
 }
 
