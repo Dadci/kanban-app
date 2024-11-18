@@ -72,26 +72,36 @@ const TaskDialog = () => {
     }
 
     const handleSubmit = (e) => {
-        e.preventDefault()
-        setError('')
-
+        e.preventDefault();
+        setError('');
 
         if (!title.trim()) {
-            setError('Title is required!')
-            return
+            setError('Title is required!');
+            return;
         }
 
         if (subtasks.some(st => !st.title.trim())) {
-            setError('All subtasks must have titles!')
-            return
+            setError('All subtasks must have titles!');
+            return;
         }
 
-        const column = currentBoard.columns.find(col => col.name === status)
+        // Find the target column based on status
+        const targetColumn = currentBoard.columns.find(col => col.name === status);
+
+        if (!targetColumn) {
+            setError('Invalid column status!');
+            return;
+        }
 
         if (taskDialogType === 'edit') {
+            const oldColumn = currentBoard.columns.find(col =>
+                col.tasks.some(t => t.id === taskData?.id)
+            );
+
             dispatch(editTask({
                 boardId: activeBoard,
-                columnId: column.id,
+                oldColumnId: oldColumn?.id,
+                newColumnId: targetColumn.id,
                 taskId: taskData.id,
                 task: {
                     title,
@@ -100,12 +110,12 @@ const TaskDialog = () => {
                     status,
                     subtasks
                 }
-            }))
-            toast.success('Task saved successfully!')
+            }));
+            toast.success('Task saved successfully!');
         } else {
             dispatch(addTask({
                 boardId: activeBoard,
-                columnId: column.id,
+                columnId: targetColumn.id, // Use targetColumn instead of undefined column
                 task: {
                     title,
                     description,
@@ -118,12 +128,11 @@ const TaskDialog = () => {
                         year: 'numeric'
                     })
                 }
-            }))
-            toast.success('Task added successfully!')
+            }));
+            toast.success('Task added successfully!');
         }
-        dispatch(closeTaskDialog())
-    }
-
+        dispatch(closeTaskDialog());
+    };
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-neutral-950/70 z-50">
             <div className="w-[480px] flex flex-col p-8 bg-white rounded-lg shadow-sm">

@@ -11,9 +11,11 @@ createRoot(document.getElementById('root')).render(
     <Provider store={store}>
       <App />
       <Toaster toastOptions={{
+
         style: {
-          fontSize: '14px',
+          fontSize: '13px',
           fontWeight: '500',
+          maxWidth: '380px',
         }
       }} />
     </Provider>

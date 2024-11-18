@@ -7,6 +7,7 @@ import AlertDialog from './AlertDialog'
 import { useDispatch, useSelector } from 'react-redux'
 import Open_icon from '../assets/icon-show-sidebar.svg'
 import TaskDialog from './TaskDialog'
+import ViewTaskDialog from './ViewTaskDialog'
 
 
 const DashboardLayout = () => {
@@ -21,11 +22,14 @@ const DashboardLayout = () => {
 
     const isTaskDialogOpen = useSelector((state) => state.modal.isTaskDialogOpen) // Task Dialog state
 
+    const isViewTaskDialogOpen = useSelector((state) => state.modal.isViewTaskDialogOpen)
+
+    const viewTaskData = useSelector((state) => state.modal.viewTaskData)
 
     return (
         <div className='w-screen h-screen bg-background flex flex-col relative'>
             <NavBar />
-            <div className='flex flex-1 overflow-hidden relative'>
+            <div className='flex flex-1 flex-shrink-0 overflow-hidden relative'>
                 <SideBar open={open} setOpen={setOpen} />
 
                 <div className={`p-5 bg-primary absolute w-14 h-14 rounded-r-full self-end mb-8 cursor-pointer flex items-center justify-center transition-all duration-500 ease-in-out
@@ -39,6 +43,7 @@ const DashboardLayout = () => {
             {openModal && <BoardDialog />}
             {openAlert && <AlertDialog />}
             {isTaskDialogOpen && <TaskDialog />}
+            {isViewTaskDialogOpen && <ViewTaskDialog task={viewTaskData} />}
 
         </div>
     )

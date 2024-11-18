@@ -13,6 +13,9 @@ const modalSlice = createSlice({
         isTaskAlertDialogOpen: false,
         taskToDelete: null,
 
+        isViewTaskDialogOpen: false,
+        viewTaskData: null,
+
         dialogType: null, // 'create' or 'edit'
         boardData: null,
 
@@ -54,9 +57,17 @@ const modalSlice = createSlice({
         closeTaskAlertDialog: (state) => {
             state.isTaskAlertDialogOpen = false
             state.taskToDelete = null
+        },
+        openViewTaskDialog: (state, action) => {
+            state.isViewTaskDialogOpen = true
+            state.viewTaskData = action.payload
+        },
+        closeViewTaskDialog: (state) => {
+            state.isViewTaskDialogOpen = false
+            state.viewTaskData = null
         }
     }
 })
 
-export const { openBoardDialog, closeBoardDialog, openAlertDialog, closeAlertDialog, openTaskDialog, closeTaskDialog, openTaskAlertDialog, closeTaskAlertDialog } = modalSlice.actions
+export const { openBoardDialog, closeBoardDialog, openAlertDialog, closeAlertDialog, openTaskDialog, closeTaskDialog, openTaskAlertDialog, closeTaskAlertDialog, openViewTaskDialog, closeViewTaskDialog } = modalSlice.actions
 export default modalSlice.reducer

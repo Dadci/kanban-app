@@ -64,37 +64,73 @@ const boardsSlice = createSlice({
             }
         },
         addTask: (state, action) => {
-            const { boardId, columnId, task } = action.payload
-            const board = state.boards.find(b => b.id === boardId)
-            const column = board?.columns.find(c => c.id === columnId)
-            if (column) {
-                column.tasks.push({
-                    ...task,
+            const { boardId, columnId, task } = action.payload;
+
+            // Find the board first
+            const board = state.boards.find(b => b.id === boardId);
+            if (!board) return;
+
+            // Find the column using columnId
+            const column = board.columns.find(c => c.id === columnId);
+            if (!column) return;
+
+            // Add the task with all required properties
+            const newTask = {
+                ...task,
+                id: uuidv4(),
+                status: column.name,
+                subtasks: task.subtasks.map(st => ({
                     id: uuidv4(),
-                    status: column.name,
-                    subtasks: task.subtasks.map(st => ({
-                        id: uuidv4(),
-                        title: st.title,
-                        isCompleted: false
-                    }))
-                })
-            }
+                    title: st.title,
+                    isCompleted: false
+                }))
+            };
+
+            column.tasks.push(newTask);
         },
+        // In boardsSlice.js, update the editTask reducer:
         editTask: (state, action) => {
-            const { boardId, columnId, taskId, task } = action.payload
+            const { boardId, oldColumnId, newColumnId, taskId, task } = action.payload
             const board = state.boards.find(b => b.id === boardId)
-            const column = board?.columns.find(c => c.id === columnId)
-            if (column) {
-                const taskIndex = column.tasks.findIndex(t => t.id === taskId)
-                if (taskIndex !== -1) {
-                    column.tasks[taskIndex] = {
-                        ...column.tasks[taskIndex],
+
+            // If status changed, move task to new column
+            if (oldColumnId !== newColumnId) {
+                // Remove from old column
+                const oldColumn = board?.columns.find(c => c.id === oldColumnId)
+                const taskToMove = oldColumn?.tasks.find(t => t.id === taskId)
+                if (oldColumn && taskToMove) {
+                    oldColumn.tasks = oldColumn.tasks.filter(t => t.id !== taskId)
+                }
+
+                // Add to new column
+                const newColumn = board?.columns.find(c => c.id === newColumnId)
+                if (newColumn && taskToMove) {
+                    newColumn.tasks.push({
+                        ...taskToMove,
                         ...task,
+                        status: newColumn.name,
                         subtasks: task.subtasks.map(st => ({
                             id: st.id || uuidv4(),
                             title: st.title,
                             isCompleted: st.isCompleted || false
                         }))
+                    })
+                }
+            } else {
+                // Update task in same column
+                const column = board?.columns.find(c => c.id === newColumnId)
+                if (column) {
+                    const taskIndex = column.tasks.findIndex(t => t.id === taskId)
+                    if (taskIndex !== -1) {
+                        column.tasks[taskIndex] = {
+                            ...column.tasks[taskIndex],
+                            ...task,
+                            subtasks: task.subtasks.map(st => ({
+                                id: st.id || uuidv4(),
+                                title: st.title,
+                                isCompleted: st.isCompleted || false
+                            }))
+                        }
                     }
                 }
             }
@@ -112,14 +148,20 @@ const boardsSlice = createSlice({
             }
         },
         toggleSubtask: (state, action) => {
-            const { boardId, columnId, taskId, subtaskId } = action.payload
-            const board = state.boards.find(b => b.id === boardId)
-            const column = board?.columns.find(c => c.id === columnId)
-            const task = column?.tasks.find(t => t.id === taskId)
-            const subtask = task?.subtasks.find(st => st.id === subtaskId)
-            if (subtask) {
-                subtask.isCompleted = !subtask.isCompleted
-            }
+            const { boardId, columnId, taskId, subtaskId } = action.payload;
+            const board = state.boards.find(b => b.id === boardId);
+            if (!board) return;
+
+            const column = board.columns.find(c => c.id === columnId);
+            if (!column) return;
+
+            const task = column.tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            const subtask = task.subtasks.find(st => st.id === subtaskId);
+            if (!subtask) return;
+
+            subtask.isCompleted = !subtask.isCompleted;
         },
 
 

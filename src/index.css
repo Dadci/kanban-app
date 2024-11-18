@@ -11,11 +11,6 @@
   overflow: none;
   box-sizing: border-box;
   overscroll-behavior: none;
-  
-  
+
 }
 
-#root {
-  height: 100%;
-  overflow: hidden;
-}

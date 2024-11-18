@@ -9,7 +9,7 @@ const Column = ({column}) => {
 
         <>
             
-                <div className='flex flex-col items-start w-[280px] space-y-5'>
+                <div className='flex flex-col items-start w-[280px] space-y-5 flex-shrink-0'>
                     <ColumnStatus name={column.name} columnId={column.id} />
                     <TasksWarpper columnId={column.id}/>
 

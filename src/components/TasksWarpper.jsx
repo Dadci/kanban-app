@@ -14,7 +14,7 @@ const TasksWarpper = ({ columnId }) => {
     const tasks = column?.tasks || []
 
     return (
-        <div className='flex flex-col gap-5 w-full overflow-y-auto'>
+        <div className='flex flex-shrink-0 flex-col gap-3 w-full overflow-y-auto max-h-[calc(100vh-200px)]'>
 
 
             {tasks.map(task => (

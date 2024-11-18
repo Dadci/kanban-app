@@ -63,7 +63,7 @@ const NavBar = () => {
 
                     <div className='flex items-center gap-5 relative' ref={optionsRef}>
 
-                        <button disabled={boards.length === 0} className='bg-primary text-sm disabled:bg-primary-hover font-semibold text-white px-6 py-4 rounded-full hover:bg-primary-hover' onClick={handleAddTask}>+ Add New Task</button>
+                        <button disabled={boards.length === 0} className='bg-primary text-sm disabled:bg-primary-hover font-semibold text-white px-6 py-3 rounded-full hover:bg-primary-hover' onClick={handleAddTask}>+ Add New Task</button>
                         <img src={dots} alt="dots" className=' cursor-pointer p-2' onClick={handleOptions} />
 
                         {openOptions && <Options handleOptions={handleOptions} />}

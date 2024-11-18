@@ -18,7 +18,7 @@ const SideBoardItem = () => {
                 <div
                     key={board.id}
                     onClick={() => handleClick(board.id)}
-                    className={`flex flex-row items-center gap-4 px-8 py-4 rounded-r-full cursor-pointer
+                    className={`flex flex-row items-center gap-4 px-8 py-3 rounded-r-full cursor-pointer
                         ${activeBoard === board.id
                             ? 'bg-primary text-white'
                             : 'hover:bg-primary/10 hover:text-primary'
