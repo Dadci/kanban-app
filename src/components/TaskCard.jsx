@@ -39,13 +39,13 @@ const TaskCard = ({ task, columnId }) => {
     // };
 
     const style = transform ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0) ${isDragging ? 'rotate(6deg)' : ''}`,
         zIndex: isDragging ? 10 : 0,
         transition,
-        position :'relative'
+        position: 'relative'
     } : undefined;
 
-
+    
 
     const [openOptions, setOpenOptions] = useState(false)
     const activeBoard = useSelector(state => state.boards.activeBoard)
@@ -79,42 +79,37 @@ const TaskCard = ({ task, columnId }) => {
  
 
     return (
-
         <div {...listeners} {...attributes} ref={setNodeRef}
-            style={style} key={task.id} className={`group flex-shrink-0  bg-white py-4 px-4 flex flex-col gap-1 rounded-lg border border-lines hover:shadow-sm hover:cursor-grab active:cursor-grabbing  group-hover:text-primary ${isDragging ? 'opacity-60 border-dashed' : ''}`}>
+            style={{
+                ...style,
+                transition: 'transform 0.2s ease, opacity 0.2s ease' // Added smooth transition
+            }} 
+            key={task.id} 
+            className={`group flex-shrink-0 bg-white py-4 px-4 flex flex-col gap-1 rounded-lg border border-lines hover:shadow-sm hover:cursor-grab active:cursor-grabbing group-hover:text-primary ${isDragging ? 'opacity-70 border-dashed' : ''}`}
+        >
             <div className='flex flex-row items-start justify-between gap-4' draggable={false} ref={cardRef} >
-
                 <h1 className='text-text text-[14px] font-semibold group-hover:text-primary break-all leading-5'>{task.title}</h1>
 
-                <button className=' p-1 rounded-full shrink-0 z-[45]' draggable={false} onClick={handleOptionsClick} onPointerDown={(e) => {
+                <button className='p-1 rounded-full shrink-0 z-[45]' draggable={false} onClick={handleOptionsClick} onPointerDown={(e) => {
                     e.stopPropagation(); 
                 }}>
-                    <img draggable={false} src={dots} alt="dots" className=' w-1 cursor-pointer text-lg'
-                    />
+                    <img draggable={false} src={dots} alt="dots" className='w-1 cursor-pointer text-lg'/>
                 </button>
 
-
                 {openOptions &&
-
-                    <CardOptions handleOptions={() => setOpenOptions(false)} task={{ ...task, columnId }}
-                    />
-
+                    <CardOptions handleOptions={() => setOpenOptions(false)} task={{ ...task, columnId }}/>
                 }
-
-
             </div>
 
             <p className='text-text-secondary text-[12px] font-medium mb-2'>{completedSubtasks} of {task?.subtasks.length} subtasks</p>
 
-            {task.priority === 'low' ? <span className='text-[10px] text-center w-1/5 font-semibold px-3 py-[2px] bg-green-100 text-green-700 rounded-md'>Low</span> : task.priority === 'medium' ? <span className='text-[10px] text-center w-[25%] font-semibold px-3 py-[2px] bg-orange-100 text-orange-700 rounded-md'>Medium</span> : <span className='text-[10px] text-center w-1/5 font-semibold px-3 py-[2px] bg-red-100 text-red-700 rounded-md'>High
-            </span>}
-
-
+            {task.priority === 'low' ? 
+                <span className='text-[10px] text-center w-1/5 font-semibold px-3 py-[2px] bg-green-100 text-green-700 rounded-md'>Low</span> : 
+             task.priority === 'medium' ? 
+                <span className='text-[10px] text-center w-[25%] font-semibold px-3 py-[2px] bg-orange-100 text-orange-700 rounded-md'>Medium</span> : 
+                <span className='text-[10px] text-center w-1/5 font-semibold px-3 py-[2px] bg-red-100 text-red-700 rounded-md'>High</span>
+            }
         </div>
-
-
-
-
     )
 }
 

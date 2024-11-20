@@ -27,7 +27,8 @@ export default {
         },
         background: {
           DEFAULT: '#F4F7FD',
-          dark: '20212C'
+          dark: '20212C',
+          darkCard: '#2B2C37'
         },
         text: {
           DEFAULT: '#000112',

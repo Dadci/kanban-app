@@ -46,8 +46,9 @@ const BoardWarpper = () => {
 
 
 
+
             </div> :
-                <div className='flex flex-row pb-6 flex-1 px-8 py-6 space-x overflow-x-auto flex-shrink-0 '>
+                <div className='flex flex-row pb-6 flex-1 px-8 py-6 space-x overflow-auto flex-shrink-0 scroll-smooth '>
 
                     {columns.map((column) => (
 

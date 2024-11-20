@@ -15,7 +15,7 @@ const SideBar = ({ open, setOpen }) => {
 
 
     return (
-        <div className={` ${open ? 'w-0 translate-x-[-300px] opacity-0' : 'w-[300px] translate-x-0 opacity-100'} bg-white pt-6 border-r border-r-lines flex flex-col flex-shrink-0 justify-between h-full transition-all duration-700 ease-in-out`}>
+        <div className={` ${open ? 'w-0 translate-x-[-260px] opacity-0' : 'w-[300px] translate-x-0 opacity-100'} bg-white pt-6 border-r border-r-lines flex flex-col flex-shrink-0 justify-between h-full transition-all duration-700 ease-in-out`}>
             <div>
 
                 <div className='pl-8'>

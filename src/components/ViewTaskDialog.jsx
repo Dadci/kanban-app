@@ -61,7 +61,7 @@ const ViewTaskDialog = ({ task }) => {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-neutral-950/70 z-50">
-            <div className="w-[480px] flex flex-col p-8 bg-white rounded-lg shadow-sm">
+            <div className="w-[480px] flex flex-col p-8 bg-white rounded-lg shadow-sm overflow-y-auto">
                 <div className="flex flex-row items-start justify-between w-full mb-[2px]">
                     <h1 className="text-text font-bold leading-7 text-lg">{task.title}</h1>
                     <img
@@ -82,7 +82,7 @@ const ViewTaskDialog = ({ task }) => {
 
                 <p className="text-text-secondary text-[14px] mb-6 leading-6">{task.description}</p>
 
-                <div className="mb-6 shrink-0">
+                <div className="mb-6 shrink-0 overflow-y max-h-[60vh]">
                     <p className="text-text-secondary text-[12px] font-medium mb-3">
                         Subtasks ({completedSubtasks} of {task.subtasks.length})
                     </p>

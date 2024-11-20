@@ -150,7 +150,7 @@ const TaskDialog = () => {
                     <p className="text-destructive text-sm font-medium mt-2 mb-4">{error}</p>
                 )}
 
-                <form onSubmit={handleSubmit} className="flex flex-col mt-6 w-full">
+                <form onSubmit={handleSubmit} className="flex flex-col mt-6 w-full overflow-y-auto">
                     <label className="text-text-secondary text-[12px] font-medium mb-2">
                         Title
                     </label>
@@ -172,26 +172,31 @@ const TaskDialog = () => {
                         onChange={(e) => setDescription(e.target.value)}
                     />
 
-                    <label className="text-text-secondary text-[12px] font-medium mb-2">
-                        Subtasks
-                    </label>
-                    {subtasks.map(subtask => (
-                        <div key={subtask.id} className="flex flex-row items-center gap-4">
-                            <input
-                                type="text"
-                                className="border mb-4 placeholder:text-sm text-sm border-lines rounded-lg p-3 flex-1"
-                                placeholder="e.g. Make coffee"
-                                value={subtask.title}
-                                onChange={(e) => handleSubtaskChange(subtask.id, e.target.value)}
-                            />
-                            <img
-                                src={close_icon}
-                                alt="remove"
-                                className="cursor-pointer mb-4"
-                                onClick={handleRemoveSubtask(subtask.id)}
-                            />
-                        </div>
-                    ))}
+                    <div className='overflow-y-auto max-h-[25vh]'>
+
+
+                        <label className="text-text-secondary text-[12px] font-medium mb-2">
+                            Subtasks
+                        </label>
+                        {subtasks.map(subtask => (
+                            <div key={subtask.id} className="flex flex-row items-center gap-4 overflow-y-auto">
+                                <input
+                                    type="text"
+                                    className="border mb-4 placeholder:text-sm text-sm border-lines rounded-lg p-3 flex-1"
+                                    placeholder="e.g. Make coffee"
+                                    value={subtask.title}
+                                    onChange={(e) => handleSubtaskChange(subtask.id, e.target.value)}
+                                />
+                                <img
+                                    src={close_icon}
+                                    alt="remove"
+                                    className="cursor-pointer mb-4"
+                                    onClick={handleRemoveSubtask(subtask.id)}
+                                />
+                            </div>
+                        ))}
+                    </div>
+
                     <button
                         type="button"
                         className="text-primary mb-6 font-semibold text-sm px-4 py-3 bg-primary/25 rounded-full"

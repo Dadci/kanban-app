@@ -38,7 +38,7 @@ const ColumnStatus = ({ name, columnId }) => {
 
 
     return (
-        <div className=''>
+        <div >
 
             <div className='flex flex-row items-center p-2 gap-2'>
                 <span className={ `p-1 w-3 h-3 ${colorClass} rounded-full`} ></span>

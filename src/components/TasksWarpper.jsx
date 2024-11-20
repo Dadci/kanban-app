@@ -24,12 +24,17 @@ const TasksWarpper = ({ columnId }) => {
     return (
 
 
-        <div ref={setNodeRef} className={`flex flex-col flex-shrink-0 gap-3 w-full flex-1 p-2 mb-8 pb-4 ${isOver ? ' border-2 border-dashed border-text-secondary/30 rounded-lg' : ''} `} draggable={false} >
+        <div ref={setNodeRef} className={`flex flex-col flex-shrink-0 gap-3 w-full flex-1 p-2 mb-8  pb-4  ${isOver ? ' border-2 border-dashed border-text-secondary/30 rounded-lg' : ''} `} draggable={false} >
+
 
 
             {tasks.map(task => (
                 <TaskCard key={task.id} task={task} columnId={column.id} />
             ))}
+
+
+
+
 
         </div>
 

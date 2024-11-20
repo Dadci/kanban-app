@@ -85,7 +85,10 @@ const DashboardLayout = () => {
         <div className='w-screen h-screen bg-background flex flex-col relative'>
             <NavBar />
             <div className='flex flex-1 flex-shrink-0 overflow-hidden relative'>
-                <SideBar open={open} setOpen={setOpen} />
+                <div className='hidden md:block'>
+
+                    <SideBar open={open} setOpen={setOpen} />
+                </div>
 
                 <div className={`p-5 bg-primary absolute w-14 h-14 rounded-r-full self-end mb-8 cursor-pointer flex items-center justify-center transition-all duration-500 ease-in-out
                 ${open ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[-100px]'} 
