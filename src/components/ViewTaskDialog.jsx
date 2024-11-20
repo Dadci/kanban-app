@@ -52,7 +52,7 @@ const ViewTaskDialog = ({ task }) => {
 
         }))
         dispatch(closeViewTaskDialog())
-        toast.success('Task status updated successfully to ' + newStatus)
+        toast.success('Task status moved successfully to ' + newStatus)
     }
 
     const onClose = () => {

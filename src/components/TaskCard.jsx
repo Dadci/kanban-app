@@ -1,6 +1,6 @@
 import React from 'react'
 import dots from '../assets/icon-vertical-ellipsis.svg'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import CardOptions from './CardOptions'
 import { useSelector } from 'react-redux'
 import { useDraggable } from '@dnd-kit/core'
@@ -10,8 +10,24 @@ import { useDraggable } from '@dnd-kit/core'
 
 const TaskCard = ({ task, columnId }) => {
 
+    const cardRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (cardRef.current && !cardRef.current.contains(event.target)) {
+                setOpenOptions(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+
     const { attributes, listeners, setNodeRef, transform, isDragging, transition } = useDraggable({
-        id: task.id,
+        id: task.id.toString(),
         data: { task }
     });
 
@@ -24,8 +40,9 @@ const TaskCard = ({ task, columnId }) => {
 
     const style = transform ? {
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-        // zIndex: isDragging ? 10 : 0,
+        zIndex: isDragging ? 10 : 0,
         transition,
+        position :'relative'
     } : undefined;
 
 
@@ -45,28 +62,32 @@ const TaskCard = ({ task, columnId }) => {
     const completedSubtasks = currentTask?.subtasks.filter(st => st.isCompleted).length || 0;
 
 
-    const handleOptions = () => {
-        setOpenOptions(!openOptions)
-    }
+    // const handleOptions = () => {
+    //     setOpenOptions(!openOptions)
+    // }
 
 
     const handleOptionsClick = (e) => {
         // Stop the event from triggering drag
         if (!isDragging) {
+
             e.stopPropagation();
-            handleOptions();
+            setOpenOptions(!openOptions)
         }
     };
 
+ 
+
     return (
 
-        <div {...listeners} {...attributes} ref={setNodeRef} style={style} key={task.id} className={`group flex-shrink-0  bg-white py-4 px-4 flex flex-col gap-1 rounded-lg border border-lines hover:shadow-sm hover:cursor-grab active:cursor-grabbing  group-hover:text-primary ${isDragging ? 'opacity-60 border-dashed' : ''}`}>
-            <div className='flex flex-row items-start justify-between gap-4' draggable={false} >
+        <div {...listeners} {...attributes} ref={setNodeRef}
+            style={style} key={task.id} className={`group flex-shrink-0  bg-white py-4 px-4 flex flex-col gap-1 rounded-lg border border-lines hover:shadow-sm hover:cursor-grab active:cursor-grabbing  group-hover:text-primary ${isDragging ? 'opacity-60 border-dashed' : ''}`}>
+            <div className='flex flex-row items-start justify-between gap-4' draggable={false} ref={cardRef} >
 
                 <h1 className='text-text text-[14px] font-semibold group-hover:text-primary break-all leading-5'>{task.title}</h1>
 
                 <button className=' p-1 rounded-full shrink-0 z-[45]' draggable={false} onClick={handleOptionsClick} onPointerDown={(e) => {
-                    e.stopPropagation();
+                    e.stopPropagation(); 
                 }}>
                     <img draggable={false} src={dots} alt="dots" className=' w-1 cursor-pointer text-lg'
                     />
@@ -75,7 +96,7 @@ const TaskCard = ({ task, columnId }) => {
 
                 {openOptions &&
 
-                    <CardOptions handleOptions={handleOptions} task={{ ...task, columnId }}
+                    <CardOptions handleOptions={() => setOpenOptions(false)} task={{ ...task, columnId }}
                     />
 
                 }

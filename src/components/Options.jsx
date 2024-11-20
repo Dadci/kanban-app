@@ -19,7 +19,6 @@ const Options = ({ handleOptions }) => {
         handleOptions()
 
 
-
     }
 
     const handleDelete = () => {

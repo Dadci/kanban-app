@@ -114,7 +114,7 @@ const BoardDialog = () => {
 
                 <div className='flex flex-row items-center justify-between w-full'>
                     <h1 className='text-text font-bold text-lg'> {dialogType === 'edit' ? 'Edit Board' : 'Add New Board'}</h1>
-                    <img src={close_icon} alt='close' type='button' className='cursor-pointer'
+                    <img src={close_icon} alt='close' type='button' className='cursor-pointer hover:bg-background p-2 rounded-lg'
                         onClick={handleClose}
                     />
 
