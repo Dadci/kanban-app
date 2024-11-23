@@ -61,9 +61,9 @@ const ViewTaskDialog = ({ task }) => {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-neutral-950/70 z-50">
-            <div className="w-[480px] flex flex-col p-8 bg-white rounded-lg shadow-sm overflow-y-auto">
+            <div className="w-[480px] flex flex-col p-8 bg-white dark:bg-background-darkCard rounded-lg shadow-sm overflow-y-auto">
                 <div className="flex flex-row items-start justify-between w-full mb-[2px]">
-                    <h1 className="text-text font-bold leading-7 text-lg">{task.title}</h1>
+                    <h1 className="text-text dark:text-white font-bold leading-7 text-lg">{task.title}</h1>
                     <img
                         src={close_icon}
                         alt="close"
@@ -80,16 +80,16 @@ const ViewTaskDialog = ({ task }) => {
 
                 </div>
 
-                <p className="text-text-secondary text-[14px] mb-6 leading-6">{task.description}</p>
+                <p className="text-text-secondary dark:text-white text-[14px] mb-6 leading-6">{task.description}</p>
 
                 <div className="mb-6 shrink-0 overflow-y max-h-[60vh]">
-                    <p className="text-text-secondary text-[12px] font-medium mb-3">
+                    <p className="text-text-secondary dark:text-white text-[12px] font-medium mb-3">
                         Subtasks ({completedSubtasks} of {task.subtasks.length})
                     </p>
                     {currentTask?.subtasks.map(subtask => (
                         <label
                             key={subtask.id}
-                            className="flex items-center  gap-4 p-4 mb-2 bg-background rounded hover:bg-primary/10 cursor-pointer"
+                            className="flex items-center  gap-4 p-4 mb-2 bg-background dark:border-lines-dark dark:text-white dark:bg-background-dark/60 rounded hover:bg-primary/50 dark:hover:bg-background-dark cursor-pointer"
                         >
 
                             <input
@@ -99,7 +99,7 @@ const ViewTaskDialog = ({ task }) => {
                                 className="h-5 w-5 flex-shrink-0 rounded border border-lines checked:bg-primary checked:border-transparent relative"
                             />
 
-                            <span className={`text-[13px] font-medium ${subtask.isCompleted ? 'text-text-secondary line-through' : 'text-text'}`}>
+                            <span className={`text-[13px] font-medium ${subtask.isCompleted ? 'text-text-secondary  line-through' : 'text-text dark:text-white'}`}>
                                 {subtask.title}
                             </span>
                         </label>
@@ -107,11 +107,11 @@ const ViewTaskDialog = ({ task }) => {
                 </div>
 
                 <div>
-                    <p className="text-text-secondary text-[12px] font-medium mb-2">Current Status</p>
+                    <p className="text-text-secondary dark:text-white text-[12px] font-medium mb-2">Current Status</p>
                     <select
                         value={task.status}
                         onChange={(e) => handleStatusChange(e.target.value)}
-                        className="border border-lines w-full rounded-lg p-3 text-[13px]"
+                        className="border border-lines  dark:border-lines-dark dark:text-white dark:bg-background-darkCard w-full rounded-lg p-3 text-[13px]"
                     >
                         {currentBoard?.columns.map(column => (
                             <option key={column.id} value={column.name}>

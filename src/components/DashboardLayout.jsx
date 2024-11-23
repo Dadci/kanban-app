@@ -20,7 +20,7 @@ const DashboardLayout = () => {
     const dispatch = useDispatch();
     const boards = useSelector(state => state.boards.boards);
     const activeBoard = useSelector(state => state.boards.activeBoard);
-
+    
 
     const [open, setOpen] = useState(false) // Sidebar state 
 
@@ -82,32 +82,35 @@ const DashboardLayout = () => {
     const viewTaskData = useSelector((state) => state.modal.viewTaskData)
 
     return (
-        <div className='w-screen h-screen bg-background flex flex-col relative'>
-            <NavBar />
-            <div className='flex flex-1 flex-shrink-0 overflow-hidden relative'>
-                <div className='hidden md:block'>
+        <div >
 
-                    <SideBar open={open} setOpen={setOpen} />
-                </div>
+            <div className='w-screen h-screen bg-background dark:bg-background-dark  flex flex-col relative'>
+                <NavBar />
+                <div className='flex flex-1 flex-shrink-0 overflow-hidden relative'>
+                    <div className='hidden md:block'>
 
-                <div className={`p-5 bg-primary absolute w-14 h-14 rounded-r-full self-end mb-8 cursor-pointer flex items-center justify-center transition-all duration-500 ease-in-out
+                        <SideBar open={open} setOpen={setOpen} />
+                    </div>
+
+                    <div className={`p-5 bg-primary absolute w-14 h-14 rounded-r-full self-end mb-8 cursor-pointer flex items-center justify-center transition-all duration-500 ease-in-out
                 ${open ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[-100px]'} 
                 ${open ? 'visible' : 'invisible'}`}>
-                    <img src={Open_icon} alt='open' onClick={() => setOpen(!open)} className=' self-center' />
+                        <img src={Open_icon} alt='open' onClick={() => setOpen(!open)} className=' self-center' />
+                    </div>
+
+
+                    <DndContext onDragEnd={handleDragEnd} sensors={sensors} measuring={measuringConfig}>
+                        <BoardWarpper />
+
+                    </DndContext>
+
                 </div>
-
-
-                <DndContext onDragEnd={handleDragEnd} sensors={sensors} measuring={measuringConfig}>
-                    <BoardWarpper />
-
-                </DndContext>
+                {openModal && <BoardDialog />}
+                {openAlert && <AlertDialog />}
+                {isTaskDialogOpen && <TaskDialog />}
+                {isViewTaskDialogOpen && <ViewTaskDialog task={viewTaskData} />}
 
             </div>
-            {openModal && <BoardDialog />}
-            {openAlert && <AlertDialog />}
-            {isTaskDialogOpen && <TaskDialog />}
-            {isViewTaskDialogOpen && <ViewTaskDialog task={viewTaskData} />}
-
         </div>
     )
 }

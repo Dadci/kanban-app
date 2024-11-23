@@ -110,9 +110,9 @@ const BoardDialog = () => {
 
     return (
         <div className='fixed inset-0 flex items-center justify-center bg-neutral-950/70 z-50'>
-            <div className='w-[480px] max-h-[90vh] flex flex-col p-8 bg-white rounded-lg shadow-sm'>
+            <div className='w-[480px] max-h-[90vh] flex flex-col p-8 bg-white dark:bg-background-darkCard rounded-lg shadow-sm'>
                 <div className='flex flex-row items-center justify-between w-full'>
-                    <h1 className='text-text font-bold text-lg'>{dialogType === 'edit' ? 'Edit Board' : 'Add New Board'}</h1>
+                    <h1 className='text-text dark:text-white font-bold text-lg'>{dialogType === 'edit' ? 'Edit Board' : 'Add New Board'}</h1>
                     <img src={close_icon} alt='close' type='button' className='cursor-pointer hover:bg-background p-2 rounded-lg'
                         onClick={handleClose}
                     />
@@ -122,21 +122,21 @@ const BoardDialog = () => {
                     <p className="text-destructive text-sm mt-2 mb-4">{error}</p>
                 )}
                 <form onSubmit={handleSubmit} className='flex flex-col mt-6 w-full overflow-y-auto'>
-                    <label htmlFor='name' className='text-text-secondary text-[12px] font-medium mb-2'>Name</label>
-                    <input type="text" className='border border-lines rounded-lg p-3 placeholder-text-secondary mb-6' placeholder='e.g. Web Design' value={boardName} onChange={(e) => setBoardName(e.target.value)} />
+                    <label htmlFor='name' className='text-text-secondary dark:text-white text-[12px] font-medium mb-2'>Name</label>
+                    <input type="text" className='border border-lines dark:border-lines-dark rounded-lg p-3 placeholder-text-secondary dark:text-white mb-6 dark:bg-background-darkCard' placeholder='e.g. Web Design' value={boardName} onChange={(e) => setBoardName(e.target.value)} />
 
                     <div className='overflow-y-auto max-h-[40vh]'>
-                        <label htmlFor='columns' className='text-text-secondary text-[12px] font-medium mb-2'>Columns</label>
+                        <label htmlFor='columns' className='text-text-secondary dark:text-white text-[12px] font-medium mb-2'>Columns</label>
                         {columns.map(column => (
                             <div key={column.id} className='flex flex-row items-center justify-between gap-4 gap-y-3 w-full'>
-                                <input type="text" className='border mb-4 border-lines rounded-lg p-3 flex-1 placeholder-text-secondary' placeholder='e.g. To Do' value={column.name} onChange={(e) => handleColumnChange(column.id, e.target.value)} />
+                                <input type="text" className='border mb-4 border-lines dark:border-lines-dark dark:bg-background-darkCard dark:text-white rounded-lg p-3 flex-1 placeholder-text-secondary' placeholder='e.g. To Do' value={column.name} onChange={(e) => handleColumnChange(column.id, e.target.value)} />
                                 <img src={close_icon} alt='close' type='button' className='cursor-pointer mb-4'
                                     onClick={handleRemoveColumn(column.id)}
                                 />
                             </div>
                         ))}
                     </div>
-                    <button type='button' className='text-primary mb-6 font-semibold text-sm px-4 py-3 bg-primary/25 rounded-full' onClick={handleAddColumn}>+ Add New Column</button>
+                    <button type='button' className='text-primary mb-6 font-semibold text-sm px-4 py-3 bg-primary/25 dark:bg-background rounded-full' onClick={handleAddColumn}>+ Add New Column</button>
 
                     <button type='submit' className='bg-primary text-sm font-semibold text-white px-4 py-3 rounded-full w-fullhover:bg-primary-hover'>{dialogType === 'edit' ? 'Save Changes' : 'Create New Board'}</button>
                 </form>

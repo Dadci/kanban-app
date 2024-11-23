@@ -1,5 +1,7 @@
 import React from 'react'
+import { useTheme } from '../context/ThemeContext'
 import logo_dark from '../assets/logo-dark.svg'
+import logo_light from '../assets/logo-light.svg'
 import dots from '../assets/icon-vertical-ellipsis.svg'
 import { useState, useEffect, useRef } from 'react'
 import Options from './Options'
@@ -46,24 +48,30 @@ const NavBar = () => {
         setOpenOptions(!openOptions)
     }
 
+    const { darkMode } = useTheme()
+
 
 
     return (
         <div >
-            <nav className='flex flex-row items-center w-full h-24 bg-white border-b border-b-lines flex-shrink-0 justify-between'  >
+            <nav className='flex flex-row items-center w-full h-24 bg-white border-b border-b-lines dark:border-lines-dark flex-shrink-0 justify-between dark:bg-background-darkCard'  >
 
-                <div className='p-8 w-[300px] md:border-r md:border-r-lines h-full flex items-center gap-4'>
+                <div className='p-8 w-[300px] md:border-r md:border-r-lines dark:border-lines-dark h-full flex items-center gap-4'>
 
-                    <img src={logo_dark} alt="logo" className='md:w-36 w-32' />
-                    <img src={chevron_down } alt="down" className='cursor-pointer  w-4 md:hidden inline'  />
+                    {darkMode ? <img src={logo_light} alt="logo" className='md:w-36 w-32' /> : <img src={logo_dark} alt="logo" className='md:w-36 w-32' />}
+
+
+
+
+                    <img src={chevron_down} alt="down" className='cursor-pointer  w-4 md:hidden inline' />
 
                 </div>
 
                 <div className='flex items-center md:justify-between flex-1 p-8 gap-4' >
 
-                    <h1 className='text-text text-2xl font-bold md:inline hidden'>{activeBoardName}</h1>
+                    <h1 className='text-text dark:text-white text-2xl font-bold md:inline hidden'>{activeBoardName}</h1>
 
-                    <div className='flex items-center gap-5 relative flex-shrink-0'  ref={optionsRef}>
+                    <div className='flex items-center gap-5 relative flex-shrink-0' ref={optionsRef}>
 
                         <button disabled={boards.length === 0} className='bg-primary text-sm disabled:bg-primary-hover font-semibold text-white px-6 py-3 rounded-full hover:bg-primary-hover' onClick={handleAddTask}>
                             <span className='hidden md:inline'>+ Add New Task</span>

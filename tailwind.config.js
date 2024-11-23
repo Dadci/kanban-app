@@ -1,6 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
 
+  darkMode: 'class',
+
   safelist: [
     {
       pattern: /bg-(red|blue|green|yellow|purple|pink|indigo|orange|teal|cyan)-(400|500|600)/,
@@ -23,12 +25,13 @@ export default {
         },
         lines: {
           DEFAULT: '#E4EBFA',
-          dark: '3E3F4E'
+          dark: '#3E3F4E'
         },
         background: {
           DEFAULT: '#F4F7FD',
-          dark: '20212C',
+          dark: '#20212C',
           darkCard: '#2B2C37'
+          
         },
         text: {
           DEFAULT: '#000112',

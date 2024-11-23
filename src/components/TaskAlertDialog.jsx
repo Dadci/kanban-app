@@ -39,7 +39,7 @@ const TaskAlertDialog = ({ task, setOpenDeleteAlert, handleOptions }) => {
                     setOpenDeleteAlert(false)
                 }
             }}>
-            <div className='bg-white w-[500px] rounded-lg p-8 flex flex-col shadow-sm gap-6'
+            <div className='bg-white dark:bg-background-darkCard w-[500px] rounded-lg p-8 flex flex-col shadow-sm gap-6'
                 onClick={e => e.stopPropagation()}>
                 <h1 className='text-destructive text-xl font-bold'>Delete this task?</h1>
                 <p className='text-text-secondary text-sm leading-6'>

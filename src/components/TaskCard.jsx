@@ -39,7 +39,7 @@ const TaskCard = ({ task, columnId }) => {
     // };
 
     const style = transform ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0) ${isDragging ? 'rotate(6deg)' : ''}`,
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0) ${isDragging ? 'rotate(4deg)' : ''}`,
         zIndex: isDragging ? 10 : 0,
         transition,
         position: 'relative'
@@ -85,10 +85,10 @@ const TaskCard = ({ task, columnId }) => {
                 transition: 'transform 0.2s ease, opacity 0.2s ease' // Added smooth transition
             }} 
             key={task.id} 
-            className={`group flex-shrink-0 bg-white py-4 px-4 flex flex-col gap-1 rounded-lg border border-lines hover:shadow-sm hover:cursor-grab active:cursor-grabbing group-hover:text-primary ${isDragging ? 'opacity-70 border-dashed' : ''}`}
+            className={`group flex-shrink-0 bg-white dark:bg-background-darkCard py-4 px-4 flex flex-col gap-1 rounded-lg border border-lines dark:border-lines-dark hover:shadow-sm hover:cursor-grab active:cursor-grabbing group-hover:text-primary dark:group-hover:text-text-secondary ${isDragging ? 'opacity-70 border-dashed' : ''}`}
         >
             <div className='flex flex-row items-start justify-between gap-4' draggable={false} ref={cardRef} >
-                <h1 className='text-text text-[14px] font-semibold group-hover:text-primary break-all leading-5'>{task.title}</h1>
+                <h1 className='text-text dark:text-white text-[14px] font-semibold group-hover:text-primary dark:group-hover:text-text-secondary break-all leading-5'>{task.title}</h1>
 
                 <button className='p-1 rounded-full shrink-0 z-[45]' draggable={false} onClick={handleOptionsClick} onPointerDown={(e) => {
                     e.stopPropagation(); 

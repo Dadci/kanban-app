@@ -56,7 +56,7 @@ const BoardWarpper = () => {
 
                     ))}
 
-                    <div className='flex-shrink-0 flex flex-col items-center justify-center p-5 bg-[#E9EFFA] w-[280px] rounded-lg cursor-pointer ml-6 mt-11 mb' onClick={handleEdit}>
+                    <div className='flex-shrink-0 flex flex-col items-center justify-center p-5 bg-[#E9EFFA] dark:bg-background-darkCard/50 w-[280px] rounded-lg cursor-pointer ml-6 mt-11 mb' onClick={handleEdit}>
 
                         <h1 className='text-text-secondary font-medium text-xl '>+ Add New Column</h1>
 
