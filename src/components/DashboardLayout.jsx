@@ -1,18 +1,26 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense, lazy } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { DndContext, useSensors, useSensor, PointerSensor, MeasuringStrategy } from '@dnd-kit/core'
+import { SortableContext } from '@dnd-kit/sortable'
+import { editTask } from '../store/boardsSlice'
+import toast from 'react-hot-toast'
 import NavBar from './NavBar'
 import SideBar from './SideBar'
 import BoardWarpper from './BoardWarpper'
-import BoardDialog from './BoardDialog'
-import AlertDialog from './AlertDialog'
-import { useDispatch, useSelector } from 'react-redux'
 import Open_icon from '../assets/icon-show-sidebar.svg'
-import TaskDialog from './TaskDialog'
-import ViewTaskDialog from './ViewTaskDialog'
-import { DndContext, useSensors, useSensor, PointerSensor, MeasuringStrategy } from '@dnd-kit/core'
-import { editTask } from '../store/boardsSlice'
-import { SortableContext } from '@dnd-kit/sortable'
-import toast from 'react-hot-toast'
 
+// Lazy load heavy dialog components
+const BoardDialog = lazy(() => import('./BoardDialog'))
+const AlertDialog = lazy(() => import('./AlertDialog'))
+const TaskDialog = lazy(() => import('./TaskDialog'))
+const ViewTaskDialog = lazy(() => import('./ViewTaskDialog'))
+
+// Simple loading component for dialogs
+const DialogLoading = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+    </div>
+)
 
 
 const DashboardLayout = () => {
@@ -20,7 +28,7 @@ const DashboardLayout = () => {
     const dispatch = useDispatch();
     const boards = useSelector(state => state.boards.boards);
     const activeBoard = useSelector(state => state.boards.activeBoard);
-    
+
 
     const [open, setOpen] = useState(false) // Sidebar state 
 
@@ -82,7 +90,7 @@ const DashboardLayout = () => {
     const viewTaskData = useSelector((state) => state.modal.viewTaskData)
 
     return (
-        <div >
+        <div className="h-screen flex">
 
             <div className='w-screen h-screen bg-background dark:bg-background-dark  flex flex-col relative'>
                 <NavBar />
@@ -92,7 +100,7 @@ const DashboardLayout = () => {
                         <SideBar open={open} setOpen={setOpen} />
                     </div>
 
-                    <div className={`p-5 bg-primary absolute w-14 h-14 rounded-r-full self-end mb-8 cursor-pointer flex items-center justify-center transition-all duration-500 ease-in-out
+                    <div className={`p-5 bg-primary absolute w-14 h-14 rounded-r-full self-end mb-8 cursor-pointer flex items-center justify-center transition-all duration-500 ease-in-out z-50 
                 ${open ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[-100px]'} 
                 ${open ? 'visible' : 'invisible'}`}>
                         <img src={Open_icon} alt='open' onClick={() => setOpen(!open)} className=' self-center' />
@@ -105,10 +113,12 @@ const DashboardLayout = () => {
                     </DndContext>
 
                 </div>
-                {openModal && <BoardDialog />}
-                {openAlert && <AlertDialog />}
-                {isTaskDialogOpen && <TaskDialog />}
-                {isViewTaskDialogOpen && <ViewTaskDialog task={viewTaskData} />}
+                <Suspense fallback={<DialogLoading />}>
+                    {openModal && <BoardDialog />}
+                    {openAlert && <AlertDialog />}
+                    {isTaskDialogOpen && <TaskDialog />}
+                    {isViewTaskDialogOpen && <ViewTaskDialog task={viewTaskData} />}
+                </Suspense>
 
             </div>
         </div>
