@@ -36,15 +36,11 @@ const BoardWarpper = () => {
 
         <>
 
-
-
             {boards.length === 0 ? <div className='flex flex-col items-center justify-center flex-1 gap-8'>
                 <h1 className='text-text-secondary font-medium text-[15px]'>
                     There's no Board yet . Create a new one to get started.
                 </h1>
                 <button className='bg-primary text-sm font-semibold text-white px-6 py-4 rounded-full hover:bg-primary-hover' onClick={handleClick}>+ Create New Board</button>
-
-
 
 
             </div> :
@@ -60,10 +56,7 @@ const BoardWarpper = () => {
 
                         <h1 className='text-text-secondary font-medium text-xl '>+ Add New Column</h1>
 
-
                     </div>
-
-
 
                 </div>}
         </>

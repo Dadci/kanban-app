@@ -8,6 +8,9 @@ import NavBar from './NavBar'
 import SideBar from './SideBar'
 import BoardWarpper from './BoardWarpper'
 import Open_icon from '../assets/icon-show-sidebar.svg'
+import { useNavigate, useLocation } from 'react-router-dom'
+import {Outlet} from 'react-router-dom'
+
 
 // Lazy load heavy dialog components
 const BoardDialog = lazy(() => import('./BoardDialog'))
@@ -24,13 +27,11 @@ const DialogLoading = () => (
 
 
 const DashboardLayout = () => {
-
+    const location = useLocation();
     const dispatch = useDispatch();
     const boards = useSelector(state => state.boards.boards);
     const activeBoard = useSelector(state => state.boards.activeBoard);
-
-
-    const [open, setOpen] = useState(false) // Sidebar state 
+    const [open, setOpen] = useState(false);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -45,7 +46,6 @@ const DashboardLayout = () => {
             strategy: MeasuringStrategy.Always,
         }
     };
-
 
     const handleDragEnd = (event) => {
         const { active, over } = event;
@@ -78,8 +78,6 @@ const DashboardLayout = () => {
         }
     };
 
-
-
     const openModal = useSelector((state) => state.modal.isBoardDialogOpen) // Board Dialog state
     const openAlert = useSelector((state) => state.modal.isAlertDialogOpen) // Alert Dialog state
 
@@ -106,12 +104,14 @@ const DashboardLayout = () => {
                         <img src={Open_icon} alt='open' onClick={() => setOpen(!open)} className=' self-center' />
                     </div>
 
-
-                    <DndContext onDragEnd={handleDragEnd} sensors={sensors} measuring={measuringConfig}>
-                        <BoardWarpper />
-
-                    </DndContext>
-
+                    {/* Conditionally wrap with DndContext */}
+                    {location.pathname === '/' ? (
+                        <DndContext onDragEnd={handleDragEnd} sensors={sensors} measuring={measuringConfig}>
+                            <BoardWarpper />
+                        </DndContext>
+                    ) : (
+                        <Outlet />
+                    )}
                 </div>
                 <Suspense fallback={<DialogLoading />}>
                     {openModal && <BoardDialog />}
