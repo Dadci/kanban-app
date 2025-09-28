@@ -18,6 +18,7 @@ const TaskDialog = () => {
     const [description, setDescription] = useState('')
     const [status, setStatus] = useState(currentBoard?.columns[0]?.name || '')
     const [priority, setPriority] = useState('')
+    const [dueDate, setDueDate] = useState('')
     const [subtasks, setSubtasks] = useState([
         { id: uuidv4(), title: '' }
     ])
@@ -33,6 +34,7 @@ const TaskDialog = () => {
             setDescription(taskData.description)
             setStatus(taskData.status)
             setPriority(taskData.priority)
+            setDueDate(taskData.dueDate || '')
             setSubtasks(taskData.subtasks)
         }
     }, [taskDialogType, taskData])
@@ -108,6 +110,7 @@ const TaskDialog = () => {
                     description,
                     priority,
                     status,
+                    dueDate,
                     subtasks
                 }
             }));
@@ -121,6 +124,7 @@ const TaskDialog = () => {
                     description,
                     priority,
                     status,
+                    dueDate,
                     subtasks,
                     creationDate: new Date().toLocaleDateString('eu-GB', {
                         day: 'numeric',
@@ -170,6 +174,16 @@ const TaskDialog = () => {
                         placeholder="e.g. It's always good to take a break..."
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
+                    />
+
+                    <label className="text-text-secondary dark:text-white text-[12px] font-medium mb-2">
+                        Due Date (Optional)
+                    </label>
+                    <input
+                        type="date"
+                        className="border border-lines dark:border-lines-dark dark:text-white dark:bg-background-darkCard text-sm rounded-lg p-3 mb-6"
+                        value={dueDate}
+                        onChange={(e) => setDueDate(e.target.value)}
                     />
 
                     <div className='overflow-y-auto max-h-[25vh]'>

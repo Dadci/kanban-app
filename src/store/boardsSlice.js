@@ -1,45 +1,73 @@
 // src/features/boardsSlice.js
 import { createSlice } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
+import { createStandardColumns, STANDARD_COLUMNS } from '../constants/columns'
 
 const boardsSlice = createSlice({
     name: 'boards',
     initialState: {
         boards: [],
         activeBoard: null,
+        viewMode: 'kanban', // 'kanban', 'timeline', or 'list'
     },
     reducers: {
         addBoard: (state, action) => {
-            state.boards.push({
+            const newBoard = {
                 ...action.payload,
-                columns: action.payload.columns.map(col => ({
-                    id: uuidv4(),
-                    name: col.name,
-                    tasks: []
-                }))
-            })
+                columns: createStandardColumns() // Use standard columns
+            }
+            state.boards.push(newBoard)
             state.activeBoard = action.payload.id
         },
         editBoard: (state, action) => {
-            const { id, name, columns } = action.payload;
+            const { id, name } = action.payload; // Only accept id and name now
             const boardIndex = state.boards.findIndex(b => b.id === id);
             if (boardIndex !== -1) {
-                // Preserve existing tasks while updating columns
+                // Only update the board name, keep existing columns and tasks
+                state.boards[boardIndex].name = name;
+
+                // Ensure board has standard columns (migration support)
                 const existingColumns = state.boards[boardIndex].columns;
-                const updatedColumns = columns.map(col => {
-                    const existingColumn = existingColumns.find(ec => ec.name === col.name);
+                const standardColumns = createStandardColumns();
+
+                // Migrate existing tasks to standard columns
+                const migratedColumns = standardColumns.map(stdCol => {
+                    // Try to find existing column with same or similar name
+                    const existingCol = existingColumns.find(ec =>
+                        ec.name === stdCol.name ||
+                        ec.name.toLowerCase().includes(stdCol.name.toLowerCase()) ||
+                        stdCol.name.toLowerCase().includes(ec.name.toLowerCase())
+                    );
+
                     return {
-                        id: existingColumn ? existingColumn.id : uuidv4(),
-                        name: col.name,
-                        tasks: existingColumn ? existingColumn.tasks : []
+                        ...stdCol,
+                        tasks: existingCol ? existingCol.tasks : []
                     };
                 });
 
-                state.boards[boardIndex] = {
-                    ...state.boards[boardIndex],
-                    name,
-                    columns: updatedColumns
-                };
+                // Handle any tasks from columns that don't match standard ones
+                const unmatchedTasks = [];
+                existingColumns.forEach(existingCol => {
+                    const isMatched = standardColumns.some(stdCol =>
+                        existingCol.name === stdCol.name ||
+                        existingCol.name.toLowerCase().includes(stdCol.name.toLowerCase()) ||
+                        stdCol.name.toLowerCase().includes(existingCol.name.toLowerCase())
+                    );
+
+                    if (!isMatched) {
+                        unmatchedTasks.push(...existingCol.tasks);
+                    }
+                });
+
+                // Put unmatched tasks in TO DO column
+                if (unmatchedTasks.length > 0) {
+                    const todoColumn = migratedColumns.find(col => col.name === "TO DO");
+                    if (todoColumn) {
+                        todoColumn.tasks.push(...unmatchedTasks);
+                    }
+                }
+
+                state.boards[boardIndex].columns = migratedColumns;
             }
         },
         deleteBoard: (state, action) => {
@@ -51,16 +79,6 @@ const boardsSlice = createSlice({
                 if (state.activeBoard === boardId) {
                     state.activeBoard = state.boards.length > 0 ? state.boards[0].id : null;
                 }
-            }
-        },
-        addColumn: (state, action) => {
-            const board = state.boards.find(b => b.id === state.activeBoard)
-            if (board) {
-                board.columns.push({
-                    id: uuidv4(),
-                    name: action.payload.name,
-                    tasks: []
-                })
             }
         },
         addTask: (state, action) => {
@@ -177,13 +195,15 @@ const boardsSlice = createSlice({
             if (!column) return;
 
             column.tasks = tasks;
+        },
+        setViewMode: (state, action) => {
+            state.viewMode = action.payload; // 'kanban', 'timeline', or 'list'
         }
     }
 })
 
 export const {
     addBoard,
-    addColumn,
     addTask,
     editTask,
     deleteTask,
@@ -191,7 +211,8 @@ export const {
     setActiveBoard,
     editBoard,
     deleteBoard,
-    reorderTasks
+    reorderTasks,
+    setViewMode
 } = boardsSlice.actions
 
 export default boardsSlice.reducer

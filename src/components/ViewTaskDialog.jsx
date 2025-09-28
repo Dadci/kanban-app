@@ -72,12 +72,14 @@ const ViewTaskDialog = ({ task }) => {
                     />
                 </div>
 
-                <div className='mb-6'>
+                <div className='mb-6 flex flex-wrap gap-2 items-center'>
+                    {task.priority === 'low' ? <span className='text-[10px] text-center font-semibold px-3 py-[2px] bg-green-100 text-green-700 rounded-md'>Low</span> : task.priority === 'medium' ? <span className='text-[10px] text-center font-semibold px-3 py-[2px] bg-orange-100 text-orange-700 rounded-md'>Medium</span> : <span className='text-[10px] text-center font-semibold px-3 py-[2px] bg-red-100 text-red-700 rounded-md'>High</span>}
 
-
-                    {task.priority === 'low' ? <span className='text-[10px] text-center w-1/5 font-semibold px-3 py-[2px] bg-green-100 text-green-700 rounded-md'>Low</span> : task.priority === 'medium' ? <span className='text-[10px] text-center w-[25%] font-semibold px-3 py-[2px] bg-orange-100 text-orange-700 rounded-md'>Medium</span> : <span className='text-[10px] text-center w-1/5 font-semibold px-3 py-[2px] bg-red-100 text-red-700 rounded-md'>High
-                    </span>}
-
+                    {task.dueDate && (
+                        <span className='text-[10px] font-semibold px-3 py-[2px] bg-blue-100 text-blue-700 rounded-md border border-blue-200'>
+                            Due: {new Date(task.dueDate).toLocaleDateString()}
+                        </span>
+                    )}
                 </div>
 
                 <p className="text-text-secondary dark:text-white text-[14px] mb-6 leading-6">{task.description}</p>
