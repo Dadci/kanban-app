@@ -64,6 +64,7 @@ const TaskCard = memo(({ task, columnId }) => {
   }, []);
 
   const activeBoard = useSelector((state) => state.boards.activeBoard);
+  const people = useSelector((state) => state.people.people);
 
   const currentTask = useSelector((state) => {
     const board = state.boards.boards.find((b) => b.id === activeBoard);
@@ -193,6 +194,34 @@ const TaskCard = memo(({ task, columnId }) => {
       <p className="text-text-secondary text-[12px] font-medium mb-2">
         {completedSubtasks} of {task?.subtasks.length} subtasks
       </p>
+
+      {/* Assignee Avatars */}
+      {currentTask?.assignees && currentTask.assignees.length > 0 && (
+        <div className="flex items-center gap-1 mt-2">
+          {currentTask.assignees.slice(0, 3).map((assigneeId) => {
+            const person = people.find((p) => p.id === assigneeId);
+            if (!person) return null;
+            return (
+              <div
+                key={person.id}
+                className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-semibold border-2 border-white dark:border-background-darkCard"
+                style={{ backgroundColor: person.color }}
+                title={person.name}
+              >
+                {person.initials}
+              </div>
+            );
+          })}
+          {currentTask.assignees.length > 3 && (
+            <div
+              className="w-6 h-6 rounded-full flex items-center justify-center bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 text-[10px] font-semibold border-2 border-white dark:border-background-darkCard"
+              title={`${currentTask.assignees.length - 3} more`}
+            >
+              +{currentTask.assignees.length - 3}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 });

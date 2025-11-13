@@ -13,12 +13,14 @@ const TaskDialog = () => {
     const boards = useSelector(state => state.boards.boards)
     const currentBoard = boards.find(board => board.id === activeBoard)
     const { taskDialogType, taskData } = useSelector(state => state.modal)
+    const people = useSelector(state => state.people.people)
 
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [status, setStatus] = useState(currentBoard?.columns[0]?.name || '')
     const [priority, setPriority] = useState('')
     const [dueDate, setDueDate] = useState('')
+    const [assignees, setAssignees] = useState([])
     const [subtasks, setSubtasks] = useState([
         { id: uuidv4(), title: '' }
     ])
@@ -35,7 +37,11 @@ const TaskDialog = () => {
             setStatus(taskData.status)
             setPriority(taskData.priority)
             setDueDate(taskData.dueDate || '')
+            setAssignees(taskData.assignees || [])
             setSubtasks(taskData.subtasks)
+        } else {
+            // Reset assignees for create mode
+            setAssignees([])
         }
     }, [taskDialogType, taskData])
 
@@ -71,6 +77,16 @@ const TaskDialog = () => {
 
     const handlePriorityChange = (e) => {
         setPriority(e.target.value)
+    }
+
+    const handleToggleAssignee = (personId) => {
+        setAssignees(prev => {
+            if (prev.includes(personId)) {
+                return prev.filter(id => id !== personId)
+            } else {
+                return [...prev, personId]
+            }
+        })
     }
 
     const handleSubmit = (e) => {
@@ -111,6 +127,7 @@ const TaskDialog = () => {
                     priority,
                     status,
                     dueDate,
+                    assignees,
                     subtasks
                 }
             }));
@@ -125,6 +142,7 @@ const TaskDialog = () => {
                     priority,
                     status,
                     dueDate,
+                    assignees,
                     subtasks,
                     creationDate: new Date().toLocaleDateString('eu-GB', {
                         day: 'numeric',
@@ -185,6 +203,47 @@ const TaskDialog = () => {
                         value={dueDate}
                         onChange={(e) => setDueDate(e.target.value)}
                     />
+
+                    <label className="text-text-secondary dark:text-white text-[12px] font-medium mb-2">
+                        Assign To (Optional)
+                    </label>
+                    <div className="border border-lines dark:border-lines-dark rounded-lg p-3 mb-6 max-h-[150px] overflow-y-auto">
+                        {people.length === 0 ? (
+                            <p className="text-text-secondary text-xs">No team members available. Add people first!</p>
+                        ) : (
+                            <div className="space-y-2">
+                                {people.map(person => (
+                                    <label
+                                        key={person.id}
+                                        className="flex items-center gap-3 cursor-pointer hover:bg-background dark:hover:bg-background-dark p-2 rounded-lg"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={assignees.includes(person.id)}
+                                            onChange={() => handleToggleAssignee(person.id)}
+                                            className="w-4 h-4 cursor-pointer"
+                                        />
+                                        <div
+                                            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0"
+                                            style={{ backgroundColor: person.color }}
+                                        >
+                                            {person.initials}
+                                        </div>
+                                        <div className="flex flex-col flex-1 min-w-0">
+                                            <span className="text-text dark:text-white text-sm font-medium truncate">
+                                                {person.name}
+                                            </span>
+                                            {person.role && (
+                                                <span className="text-text-secondary text-xs truncate">
+                                                    {person.role}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </label>
+                                ))}
+                            </div>
+                        )}
+                    </div>
 
                     <div className='overflow-y-auto max-h-[25vh]'>
 

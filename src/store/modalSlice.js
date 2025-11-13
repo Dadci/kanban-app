@@ -21,6 +21,12 @@ const modalSlice = createSlice({
 
         taskDialogType: null, // 'create' or 'edit'
         taskData: null,
+
+        isPeopleDialogOpen: false,
+        peopleDialogType: null, // 'create' or 'edit'
+        personData: null,
+
+        isPeopleListOpen: false,
     },
     reducers: {
         openBoardDialog: (state, action) => {
@@ -65,9 +71,40 @@ const modalSlice = createSlice({
         closeViewTaskDialog: (state) => {
             state.isViewTaskDialogOpen = false
             state.viewTaskData = null
+        },
+        openPeopleDialog: (state, action) => {
+            state.isPeopleDialogOpen = true
+            state.peopleDialogType = action.payload?.type || 'create'
+            state.personData = action.payload?.person || null
+        },
+        closePeopleDialog: (state) => {
+            state.isPeopleDialogOpen = false
+            state.peopleDialogType = null
+            state.personData = null
+        },
+        openPeopleList: (state) => {
+            state.isPeopleListOpen = true
+        },
+        closePeopleList: (state) => {
+            state.isPeopleListOpen = false
         }
     }
 })
 
-export const { openBoardDialog, closeBoardDialog, openAlertDialog, closeAlertDialog, openTaskDialog, closeTaskDialog, openTaskAlertDialog, closeTaskAlertDialog, openViewTaskDialog, closeViewTaskDialog } = modalSlice.actions
+export const {
+    openBoardDialog,
+    closeBoardDialog,
+    openAlertDialog,
+    closeAlertDialog,
+    openTaskDialog,
+    closeTaskDialog,
+    openTaskAlertDialog,
+    closeTaskAlertDialog,
+    openViewTaskDialog,
+    closeViewTaskDialog,
+    openPeopleDialog,
+    closePeopleDialog,
+    openPeopleList,
+    closePeopleList
+} = modalSlice.actions
 export default modalSlice.reducer

@@ -23,6 +23,8 @@ const BoardDialog = lazy(() => import("./BoardDialog"));
 const AlertDialog = lazy(() => import("./AlertDialog"));
 const TaskDialog = lazy(() => import("./TaskDialog"));
 const ViewTaskDialog = lazy(() => import("./ViewTaskDialog"));
+const PeopleDialog = lazy(() => import("./PeopleDialog"));
+const PeopleList = lazy(() => import("./PeopleList"));
 
 // Simple loading component for dialogs
 const DialogLoading = () => (
@@ -99,6 +101,14 @@ const DashboardLayout = () => {
 
   const viewTaskData = useSelector((state) => state.modal.viewTaskData);
 
+  const isPeopleDialogOpen = useSelector(
+    (state) => state.modal.isPeopleDialogOpen
+  );
+
+  const isPeopleListOpen = useSelector(
+    (state) => state.modal.isPeopleListOpen
+  );
+
   // Keyboard Shortcuts
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -110,7 +120,9 @@ const DashboardLayout = () => {
         openModal ||
         isTaskDialogOpen ||
         isViewTaskDialogOpen ||
-        openAlert
+        openAlert ||
+        isPeopleDialogOpen ||
+        isPeopleListOpen
       ) {
         return;
       }
@@ -200,7 +212,9 @@ const DashboardLayout = () => {
             openModal ||
             isTaskDialogOpen ||
             isViewTaskDialogOpen ||
-            openAlert
+            openAlert ||
+            isPeopleDialogOpen ||
+            isPeopleListOpen
           ) {
             // Let the components handle their own escape logic
             return;
@@ -246,6 +260,8 @@ const DashboardLayout = () => {
     isTaskDialogOpen,
     isViewTaskDialogOpen,
     openAlert,
+    isPeopleDialogOpen,
+    isPeopleListOpen,
     open,
   ]);
 
@@ -293,6 +309,8 @@ const DashboardLayout = () => {
           {openAlert && <AlertDialog />}
           {isTaskDialogOpen && <TaskDialog />}
           {isViewTaskDialogOpen && <ViewTaskDialog task={viewTaskData} />}
+          {isPeopleDialogOpen && <PeopleDialog />}
+          {isPeopleListOpen && <PeopleList />}
         </Suspense>
       </div>
     </div>
