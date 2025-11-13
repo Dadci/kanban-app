@@ -10,6 +10,7 @@ const ViewTaskDialog = ({ task }) => {
     const dispatch = useDispatch()
     const activeBoard = useSelector(state => state.boards.activeBoard)
     const boards = useSelector(state => state.boards.boards)
+    const people = useSelector(state => state.people.people)
     const currentTask = useSelector(state => {
         const board = state.boards.boards.find(b => b.id === activeBoard);
         const column = board?.columns.find(col =>
@@ -83,6 +84,37 @@ const ViewTaskDialog = ({ task }) => {
                 </div>
 
                 <p className="text-text-secondary dark:text-white text-[14px] mb-6 leading-6">{task.description}</p>
+
+                {/* Assigned People */}
+                {currentTask?.assignees && currentTask.assignees.length > 0 && (
+                    <div className="mb-6">
+                        <p className="text-text-secondary dark:text-white text-[12px] font-medium mb-3">
+                            Assigned To
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                            {currentTask.assignees.map(assigneeId => {
+                                const person = people.find(p => p.id === assigneeId);
+                                if (!person) return null;
+                                return (
+                                    <div
+                                        key={person.id}
+                                        className="flex items-center gap-2 bg-background dark:bg-background-dark px-3 py-2 rounded-lg"
+                                    >
+                                        <div
+                                            className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-semibold"
+                                            style={{ backgroundColor: person.color }}
+                                        >
+                                            {person.initials}
+                                        </div>
+                                        <span className="text-text dark:text-white text-sm">
+                                            {person.name}
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
 
                 <div className="mb-6 shrink-0 overflow-y max-h-[60vh]">
                     <p className="text-text-secondary dark:text-white text-[12px] font-medium mb-3">

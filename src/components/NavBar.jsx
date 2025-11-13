@@ -6,11 +6,12 @@ import dots from "../assets/icon-vertical-ellipsis.svg";
 import { useState, useEffect, useRef } from "react";
 import Options from "./Options";
 import { useSelector, useDispatch } from "react-redux";
-import { openTaskDialog } from "../store/modalSlice";
+import { openTaskDialog, openPeopleList } from "../store/modalSlice";
 import { setActiveBoard, setViewMode } from "../store/boardsSlice";
 import chevron_down from "../assets/icon-chevron-down.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HiViewBoards, HiCalendar, HiViewList } from "react-icons/hi";
+import { UserGroupIcon } from "@heroicons/react/24/outline";
 
 const NavBar = () => {
   const [openOptions, setOpenOptions] = useState(false);
@@ -81,6 +82,10 @@ const NavBar = () => {
 
   const handleAddTask = () => {
     dispatch(openTaskDialog());
+  };
+
+  const handlePeopleList = () => {
+    dispatch(openPeopleList());
   };
 
   const handleOptions = () => {
@@ -246,9 +251,19 @@ const NavBar = () => {
           )}
 
           <div
-            className="flex items-center gap-5 relative flex-shrink-0"
+            className="flex items-center gap-3 relative flex-shrink-0"
             ref={optionsRef}
           >
+            {!isAnalyticsPage && (
+              <button
+                className="bg-white dark:bg-background-dark border border-lines dark:border-lines-dark text-sm font-semibold text-primary px-4 py-2.5 rounded-full hover:bg-gray-50 dark:hover:bg-background-darkCard flex items-center gap-2"
+                onClick={handlePeopleList}
+                title="Manage Team"
+              >
+                <UserGroupIcon className="w-5 h-5" />
+                <span className="hidden md:inline">Team</span>
+              </button>
+            )}
             {!isAnalyticsPage && (
               <button
                 disabled={boards.length === 0}

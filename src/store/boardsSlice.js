@@ -97,6 +97,7 @@ const boardsSlice = createSlice({
                 ...task,
                 id: uuidv4(),
                 status: column.name,
+                assignees: task.assignees || [], // Array of person IDs
                 subtasks: task.subtasks.map(st => ({
                     id: uuidv4(),
                     title: st.title,
@@ -127,6 +128,7 @@ const boardsSlice = createSlice({
                         ...taskToMove,
                         ...task,
                         status: newColumn.name,
+                        assignees: task.assignees || [],
                         subtasks: task.subtasks.map(st => ({
                             id: st.id || uuidv4(),
                             title: st.title,
@@ -143,6 +145,7 @@ const boardsSlice = createSlice({
                         column.tasks[taskIndex] = {
                             ...column.tasks[taskIndex],
                             ...task,
+                            assignees: task.assignees || [],
                             subtasks: task.subtasks.map(st => ({
                                 id: st.id || uuidv4(),
                                 title: st.title,
