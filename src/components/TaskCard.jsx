@@ -130,42 +130,22 @@ const TaskCard = memo(({ task, columnId }) => {
         transition: "transform 0.2s ease, opacity 0.2s ease",
       }}
       key={task.id}
-      className={`group flex-shrink-0 bg-white dark:bg-background-darkCard py-4 px-4 flex flex-col gap-1 rounded-lg border border-lines dark:border-lines-dark hover:shadow-sm hover:cursor-grab active:cursor-grabbing group-hover:text-primary dark:group-hover:text-text-secondary ${
-        isDragging ? "opacity-70 border-dashed" : ""
+      className={`group flex-shrink-0 bg-white dark:bg-background-darkCard p-4 flex flex-col gap-3 rounded-lg border border-lines dark:border-lines-dark hover:shadow-md hover:cursor-grab active:cursor-grabbing transition-shadow ${
+        isDragging ? "opacity-70 border-dashed shadow-lg" : ""
       }`}
     >
+      {/* Header with options button */}
       <div
-        className="flex flex-row items-start justify-between gap-4"
+        className="flex flex-row items-start justify-between gap-2"
         draggable={false}
         ref={cardRef}
       >
-        <div className="flex flex-row items-center gap-2 ">
-          {/* Due Date Display */}
-          {dueDateStatus && (
-            <div
-              className={`text-[10px] font-semibold px-3 py-[2px] rounded-md   ${dueDateStatus.class}`}
-            >
-              {dueDateStatus.text}
-            </div>
-          )}
-
-          {task.priority === "low" ? (
-            <span className="text-[10px] text-center w-fit font-semibold px-3 py-[2px] bg-green-100 text-green-700 rounded-md">
-              Low
-            </span>
-          ) : task.priority === "medium" ? (
-            <span className="text-[10px] text-center w-fit font-semibold px-3 py-[2px] bg-orange-100 text-orange-700 rounded-md">
-              Medium
-            </span>
-          ) : (
-            <span className="text-[10px] text-center w-1/5 font-semibold px-3 py-[2px] bg-red-100 text-red-700 rounded-md">
-              High
-            </span>
-          )}
-        </div>
+        <h1 className="text-text dark:text-white text-[15px] font-bold group-hover:text-primary dark:group-hover:text-text-secondary break-words leading-snug flex-1">
+          {task.title}
+        </h1>
 
         <button
-          className="p-1 rounded-full shrink-0 z-[45]"
+          className="p-1.5 hover:bg-background dark:hover:bg-background-dark rounded-lg shrink-0 z-[45] transition-colors"
           draggable={false}
           onClick={handleDotsClick}
           onPointerDown={(e) => {
@@ -175,8 +155,8 @@ const TaskCard = memo(({ task, columnId }) => {
           <img
             draggable={false}
             src={dots}
-            alt="dots"
-            className="w-1 cursor-pointer text-lg"
+            alt="options"
+            className="w-1 cursor-pointer"
           />
         </button>
 
@@ -187,41 +167,98 @@ const TaskCard = memo(({ task, columnId }) => {
           />
         )}
       </div>
-      <h1 className="text-text dark:text-white text-[14px] font-semibold group-hover:text-primary dark:group-hover:text-text-secondary break-all leading-5">
-        {task.title}
-      </h1>
 
-      <p className="text-text-secondary text-[12px] font-medium mb-2">
-        {completedSubtasks} of {task?.subtasks.length} subtasks
-      </p>
+      {/* Subtasks count with progress bar */}
+      <div className="flex items-center gap-2">
+        <div className="w-full bg-background dark:bg-background-dark rounded-full h-1.5">
+          <div
+            className="bg-primary h-1.5 rounded-full transition-all"
+            style={{
+              width: `${(completedSubtasks / task?.subtasks.length) * 100}%`,
+            }}
+          />
+        </div>
+        <span className="text-text-secondary text-[11px] font-medium whitespace-nowrap">
+          {completedSubtasks}/{task?.subtasks.length}
+        </span>
+      </div>
 
-      {/* Assignee Avatars */}
-      {currentTask?.assignees && currentTask.assignees.length > 0 && (
-        <div className="flex items-center gap-1 mt-2">
-          {currentTask.assignees.slice(0, 3).map((assigneeId) => {
-            const person = people.find((p) => p.id === assigneeId);
-            if (!person) return null;
-            return (
-              <div
-                key={person.id}
-                className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-semibold border-2 border-white dark:border-background-darkCard"
-                style={{ backgroundColor: person.color }}
-                title={person.name}
-              >
-                {person.initials}
-              </div>
-            );
-          })}
-          {currentTask.assignees.length > 3 && (
-            <div
-              className="w-6 h-6 rounded-full flex items-center justify-center bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 text-[10px] font-semibold border-2 border-white dark:border-background-darkCard"
-              title={`${currentTask.assignees.length - 3} more`}
+      {/* Badges and Avatars in one row */}
+      <div className="flex items-center justify-between gap-2">
+        {/* Left side: Priority and Due Date badges */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          {/* Priority Badge - Always show if priority exists */}
+          {task.priority && (
+            <>
+              {task.priority === "low" && (
+                <span className="text-[10px] font-semibold px-2 py-1 bg-green-100 text-green-700 rounded-md">
+                  Low
+                </span>
+              )}
+              {task.priority === "medium" && (
+                <span className="text-[10px] font-semibold px-2 py-1 bg-orange-100 text-orange-700 rounded-md">
+                  Medium
+                </span>
+              )}
+              {task.priority === "high" && (
+                <span className="text-[10px] font-semibold px-2 py-1 bg-red-100 text-red-700 rounded-md">
+                  High
+                </span>
+              )}
+            </>
+          )}
+
+          {/* Due Date Badge */}
+          {dueDateStatus && (
+            <span
+              className={`text-[10px] font-semibold px-2 py-1 rounded-md ${dueDateStatus.class}`}
             >
-              +{currentTask.assignees.length - 3}
-            </div>
+              {dueDateStatus.text}
+            </span>
           )}
         </div>
-      )}
+
+        {/* Right side: Assignee Avatars */}
+        {currentTask?.assignees && currentTask.assignees.length > 0 && (
+          <div className="flex items-center -space-x-2">
+            {currentTask.assignees.slice(0, 3).map((assigneeId, index) => {
+              const person = people.find((p) => p.id === assigneeId);
+              if (!person) return null;
+              return (
+                <div
+                  key={person.id}
+                  className="relative group/avatar"
+                  style={{ zIndex: 3 - index }}
+                >
+                  <div
+                    className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-semibold border-2 border-white dark:border-background-darkCard shadow-sm transition-transform hover:scale-110 hover:z-10 cursor-pointer"
+                    style={{ backgroundColor: person.color }}
+                  >
+                    {person.initials}
+                  </div>
+                  {/* Tooltip */}
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-800 text-white text-[10px] font-medium rounded whitespace-nowrap opacity-0 invisible group-hover/avatar:opacity-100 group-hover/avatar:visible transition-all duration-200 pointer-events-none z-50">
+                    {person.name}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px] w-0 h-0 border-l-[4px] border-r-[4px] border-t-[4px] border-l-transparent border-r-transparent border-t-gray-900 dark:border-t-gray-800"></div>
+                  </div>
+                </div>
+              );
+            })}
+            {currentTask.assignees.length > 3 && (
+              <div className="relative group/avatar">
+                <div className="w-6 h-6 rounded-full flex items-center justify-center bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] font-semibold border-2 border-white dark:border-background-darkCard shadow-sm cursor-pointer">
+                  +{currentTask.assignees.length - 3}
+                </div>
+                {/* Tooltip */}
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-800 text-white text-[10px] font-medium rounded whitespace-nowrap opacity-0 invisible group-hover/avatar:opacity-100 group-hover/avatar:visible transition-all duration-200 pointer-events-none z-50">
+                  {currentTask.assignees.length - 3} more people
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px] w-0 h-0 border-l-[4px] border-r-[4px] border-t-[4px] border-l-transparent border-r-transparent border-t-gray-900 dark:border-t-gray-800"></div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 });

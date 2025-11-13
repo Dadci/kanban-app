@@ -60,99 +60,196 @@ const ViewTaskDialog = ({ task }) => {
         dispatch(closeViewTaskDialog())
     }
 
+    // Helper function to get due date status
+    const getDueDateStatus = (dueDate) => {
+        if (!dueDate) return null;
+
+        const today = new Date();
+        const due = new Date(dueDate);
+        const diffTime = due - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays < 0)
+            return {
+                text: "Overdue",
+                class: "bg-red-100 text-red-700 border-red-200",
+            };
+        if (diffDays === 0)
+            return {
+                text: "Due Today",
+                class: "bg-yellow-100 text-yellow-700 border-yellow-200",
+            };
+        if (diffDays === 1)
+            return {
+                text: "Due Tomorrow",
+                class: "bg-orange-100 text-orange-700 border-orange-200",
+            };
+        if (diffDays <= 3)
+            return {
+                text: `Due in ${diffDays} days`,
+                class: "bg-blue-100 text-blue-700 border-blue-200",
+            };
+
+        return {
+            text: due.toLocaleDateString(),
+            class: "bg-gray-100 text-gray-700 border-gray-200",
+        };
+    };
+
+    const dueDateStatus = getDueDateStatus(currentTask?.dueDate);
+
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-neutral-950/70 z-50">
-            <div className="w-[480px] flex flex-col p-8 bg-white dark:bg-background-darkCard rounded-lg shadow-sm overflow-y-auto">
-                <div className="flex flex-row items-start justify-between w-full mb-[2px]">
-                    <h1 className="text-text dark:text-white font-bold leading-7 text-lg">{task.title}</h1>
-                    <img
-                        src={close_icon}
-                        alt="close"
-                        className="cursor-pointer"
-                        onClick={onClose}
-                    />
+        <div className="fixed inset-0 flex items-center justify-center bg-neutral-950/70 z-50 p-4">
+            <div className="w-full max-w-[560px] max-h-[90vh] flex flex-col bg-white dark:bg-background-darkCard rounded-xl shadow-2xl">
+                {/* Header */}
+                <div className="flex flex-col p-6 pb-4 border-b border-lines dark:border-lines-dark">
+                    <div className="flex items-start justify-between gap-4 mb-3">
+                        <h1 className="text-text dark:text-white font-bold text-xl leading-tight flex-1">
+                            {task.title}
+                        </h1>
+                        <button
+                            onClick={onClose}
+                            className="p-2 hover:bg-background dark:hover:bg-background-dark rounded-lg transition-colors shrink-0"
+                        >
+                            <img
+                                src={close_icon}
+                                alt="close"
+                                className="w-4 h-4"
+                            />
+                        </button>
+                    </div>
+
+                    {/* Badges */}
+                    <div className='flex flex-wrap gap-2 items-center'>
+                        {/* Priority Badge */}
+                        {task.priority === 'high' && (
+                            <span className='text-[11px] font-semibold px-2.5 py-1 bg-red-100 text-red-700 rounded-md'>
+                                High
+                            </span>
+                        )}
+                        {task.priority === 'medium' && (
+                            <span className='text-[11px] font-semibold px-2.5 py-1 bg-orange-100 text-orange-700 rounded-md'>
+                                Medium
+                            </span>
+                        )}
+                        {task.priority === 'low' && (
+                            <span className='text-[11px] font-semibold px-2.5 py-1 bg-green-100 text-green-700 rounded-md'>
+                                Low
+                            </span>
+                        )}
+
+                        {/* Due Date Badge */}
+                        {dueDateStatus && (
+                            <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-md ${dueDateStatus.class}`}>
+                                {dueDateStatus.text}
+                            </span>
+                        )}
+                    </div>
                 </div>
 
-                <div className='mb-6 flex flex-wrap gap-2 items-center'>
-                    {task.priority === 'low' ? <span className='text-[10px] text-center font-semibold px-3 py-[2px] bg-green-100 text-green-700 rounded-md'>Low</span> : task.priority === 'medium' ? <span className='text-[10px] text-center font-semibold px-3 py-[2px] bg-orange-100 text-orange-700 rounded-md'>Medium</span> : <span className='text-[10px] text-center font-semibold px-3 py-[2px] bg-red-100 text-red-700 rounded-md'>High</span>}
-
-                    {task.dueDate && (
-                        <span className='text-[10px] font-semibold px-3 py-[2px] bg-blue-100 text-blue-700 rounded-md border border-blue-200'>
-                            Due: {new Date(task.dueDate).toLocaleDateString()}
-                        </span>
+                {/* Scrollable Content */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                    {/* Description */}
+                    {task.description && (
+                        <div>
+                            <h3 className="text-text-secondary dark:text-white text-[13px] font-semibold mb-2">
+                                Description
+                            </h3>
+                            <p className="text-text dark:text-white text-[14px] leading-relaxed">
+                                {task.description}
+                            </p>
+                        </div>
                     )}
-                </div>
 
-                <p className="text-text-secondary dark:text-white text-[14px] mb-6 leading-6">{task.description}</p>
-
-                {/* Assigned People */}
-                {currentTask?.assignees && currentTask.assignees.length > 0 && (
-                    <div className="mb-6">
-                        <p className="text-text-secondary dark:text-white text-[12px] font-medium mb-3">
-                            Assigned To
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                            {currentTask.assignees.map(assigneeId => {
-                                const person = people.find(p => p.id === assigneeId);
-                                if (!person) return null;
-                                return (
-                                    <div
-                                        key={person.id}
-                                        className="flex items-center gap-2 bg-background dark:bg-background-dark px-3 py-2 rounded-lg"
-                                    >
+                    {/* Assigned People */}
+                    {currentTask?.assignees && currentTask.assignees.length > 0 && (
+                        <div>
+                            <h3 className="text-text-secondary dark:text-white text-[13px] font-semibold mb-3">
+                                Assigned To
+                            </h3>
+                            <div className="flex flex-wrap gap-2">
+                                {currentTask.assignees.map(assigneeId => {
+                                    const person = people.find(p => p.id === assigneeId);
+                                    if (!person) return null;
+                                    return (
                                         <div
-                                            className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-semibold"
-                                            style={{ backgroundColor: person.color }}
+                                            key={person.id}
+                                            className="flex items-center gap-2.5 bg-background dark:bg-background-dark px-3 py-2 rounded-lg border border-lines dark:border-lines-dark"
                                         >
-                                            {person.initials}
+                                            <div
+                                                className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-semibold shadow-sm"
+                                                style={{ backgroundColor: person.color }}
+                                            >
+                                                {person.initials}
+                                            </div>
+                                            <span className="text-text dark:text-white text-sm font-medium">
+                                                {person.name}
+                                            </span>
                                         </div>
-                                        <span className="text-text dark:text-white text-sm">
-                                            {person.name}
-                                        </span>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Subtasks */}
+                    <div>
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-text-secondary dark:text-white text-[13px] font-semibold">
+                                Subtasks
+                            </h3>
+                            <span className="text-text-secondary text-[12px] font-medium">
+                                {completedSubtasks} of {task.subtasks.length} completed
+                            </span>
+                        </div>
+
+                        {/* Progress bar */}
+                        <div className="w-full bg-background dark:bg-background-dark rounded-full h-2 mb-3">
+                            <div
+                                className="bg-primary h-2 rounded-full transition-all"
+                                style={{
+                                    width: `${(completedSubtasks / task.subtasks.length) * 100}%`,
+                                }}
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            {currentTask?.subtasks.map(subtask => (
+                                <label
+                                    key={subtask.id}
+                                    className="flex items-center gap-3 p-3 bg-background dark:bg-background-dark/60 rounded-lg border border-lines dark:border-lines-dark hover:bg-background/80 dark:hover:bg-background-dark cursor-pointer transition-colors group"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={subtask.isCompleted}
+                                        onChange={() => handleSubtaskToggle(subtask.id)}
+                                        className="h-4 w-4 flex-shrink-0 rounded border-2 border-lines dark:border-lines-dark checked:bg-primary checked:border-primary cursor-pointer accent-primary"
+                                    />
+                                    <span className={`text-[14px] font-medium flex-1 ${subtask.isCompleted ? 'text-text-secondary line-through' : 'text-text dark:text-white'}`}>
+                                        {subtask.title}
+                                    </span>
+                                </label>
+                            ))}
                         </div>
                     </div>
-                )}
 
-                <div className="mb-6 shrink-0 overflow-y max-h-[60vh]">
-                    <p className="text-text-secondary dark:text-white text-[12px] font-medium mb-3">
-                        Subtasks ({completedSubtasks} of {task.subtasks.length})
-                    </p>
-                    {currentTask?.subtasks.map(subtask => (
-                        <label
-                            key={subtask.id}
-                            className="flex items-center  gap-4 p-4 mb-2 bg-background dark:border-lines-dark dark:text-white dark:bg-background-dark/60 rounded hover:bg-primary/50 dark:hover:bg-background-dark cursor-pointer"
+                    {/* Status */}
+                    <div>
+                        <h3 className="text-text-secondary dark:text-white text-[13px] font-semibold mb-2">
+                            Current Status
+                        </h3>
+                        <select
+                            value={task.status}
+                            onChange={(e) => handleStatusChange(e.target.value)}
+                            className="border border-lines dark:border-lines-dark dark:text-white dark:bg-background-darkCard w-full rounded-lg p-2.5 text-[14px] font-medium cursor-pointer hover:border-primary dark:hover:border-primary transition-colors"
                         >
-
-                            <input
-                                type="checkbox"
-                                checked={subtask.isCompleted}
-                                onChange={() => handleSubtaskToggle(subtask.id)}
-                                className="h-5 w-5 flex-shrink-0 rounded border border-lines checked:bg-primary checked:border-transparent relative"
-                            />
-
-                            <span className={`text-[13px] font-medium ${subtask.isCompleted ? 'text-text-secondary  line-through' : 'text-text dark:text-white'}`}>
-                                {subtask.title}
-                            </span>
-                        </label>
-                    ))}
-                </div>
-
-                <div>
-                    <p className="text-text-secondary dark:text-white text-[12px] font-medium mb-2">Current Status</p>
-                    <select
-                        value={task.status}
-                        onChange={(e) => handleStatusChange(e.target.value)}
-                        className="border border-lines  dark:border-lines-dark dark:text-white dark:bg-background-darkCard w-full rounded-lg p-3 text-[13px]"
-                    >
-                        {currentBoard?.columns.map(column => (
-                            <option key={column.id} value={column.name}>
-                                {column.name}
-                            </option>
-                        ))}
-                    </select>
+                            {currentBoard?.columns.map(column => (
+                                <option key={column.id} value={column.name}>
+                                    {column.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
